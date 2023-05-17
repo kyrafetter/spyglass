@@ -7,7 +7,7 @@ MAJ = 0
 MIN = 0
 REV = 0
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
-with open(os.path.join(curdir, 'mypileup/version.py'), 'w') as fout:
+with open(os.path.join(curdir, 'spyglass/version.py'), 'w') as fout:
         fout.write(
             "\n".join(["",
                        "# THIS FILE IS GENERATED FROM SETUP.PY",
@@ -17,11 +17,10 @@ with open(os.path.join(curdir, 'mypileup/version.py'), 'w') as fout:
 
 
 setup(
-    name='mypileup',
+    name='spyglass',
     version=VERSION,
-    description='CSE185 Demo Project',
-    author='Melissa Gymrek',
-    author_email='mgymrek@ucsd.edu',
+    description='CSE 185 Final Project',
+    author='Michael Chan, Kyra Fetter, and Jessica Wang',
     packages=find_packages(),
     entry_points={
         "console_scripts": [
