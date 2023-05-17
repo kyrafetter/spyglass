@@ -18,9 +18,9 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "mypileup"
-copyright = "2023, Melissa Gymrek"
-author = "Melissa Gymrek"
+project = "spyglass"
+copyright = "2023, Michael Chan, Kyra Fetter, Jessica Wang"
+author = "Michael Chan, Kyra Fetter, Jessica Wang"
 
 
 # -- General configuration ---------------------------------------------------
@@ -64,8 +64,8 @@ html_static_path = []
 
 html_context = {
     "display_github": True,  # Integrate GitHub
-    "github_user": "gymreklab",  # Username
-    "github_repo": "mypileup",  # Repo name
+    "github_user": "kyrafetter",  # Username
+    "github_repo": "spyglass",  # Repo name
     "github_version": "main",  # Version
     "conf_py_path": "/docs/",  # Path in the checkout to the docs root
 }
