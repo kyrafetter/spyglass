@@ -20,7 +20,7 @@ setup(
     name='spyglass',
     version=VERSION,
     description='CSE 185 Final Project',
-    author='Michael Chan, Kyra Fetter, and Jessica Wang',
+    author='Michael Chan, Kyra Fetter, Jessica Wang',
     packages=find_packages(),
     entry_points={
         "console_scripts": [
