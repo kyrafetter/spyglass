@@ -1,6 +1,0 @@
-chrTEST 1 12
-chrTEST 3 15
-chrTEST 40 52
-chrTEST 70 82
-chrTEST 73 85
-chrTEST 75 87
