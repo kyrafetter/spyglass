@@ -53,6 +53,7 @@ chromosome start_coordinate  end_coordinate peak_ID . strand(+/-)
 ```
 motif_name	number_foreground_peaks_with_motif   number_background_peaks_with_motif   p-value   enriched(yes/no)
 ```
+The list of motifs will be sorted so that enriched motifs are listed first and by p-value significance (smallest to largest). 
 
 <a name="testing"></a>
 ## Testing
