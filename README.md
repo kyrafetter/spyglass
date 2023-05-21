@@ -33,12 +33,10 @@ Additionally, users may choose to specify the optional options below:
 
 <a name="formats"></a>
 ## File Formats
-`peaks.txt` is a tab-delimited file with no header. It contains three columns as follows:
+`peaks.txt` is a tab-delimited file with no header. It contains six columns as follows:
 ```
-chromosome start_coordinate  end_coordinate
+chromosome start_coordinate  end_coordinate peak_ID . strand(+/-)
 ```
-
-
 
 <a name="testing"></a>
 ## Testing
