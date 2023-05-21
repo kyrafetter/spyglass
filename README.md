@@ -37,6 +37,11 @@ Additionally, users may choose to specify the optional options below:
 ```
 chromosome start_coordinate  end_coordinate peak_ID . strand(+/-)
 ```
+`ref.fa` is a reference genome sequence in FASTA format. It contains the name of the chromosome followed by the sequence:
+```
+>chr[name]
+[chromosome sequence]
+```
 
 <a name="testing"></a>
 ## Testing
