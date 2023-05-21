@@ -13,18 +13,18 @@ spyglass is a PWM (Position Weight Matrix)-based implementaion of a DNA binding 
 ## Basic Usage 
 The basic usage of `spyglass` is:
 ```
-spyglass [other options] ref.fa peaks.txt motifs.pwm
+spyglass [other options] ref.fa peaks.bed motifs.pwm
 ```
 To run `spyglass` on our mini test files (see `example-files`):
 ```
-spyglass test_ref.fa test_peaks.txt test_motifs.pwm
+spyglass test_ref.fa test_peaks.bed test_motifs.pwm
 ```
 
 <a name="options"></a>
 ## spyglass Options
 `spyglass` has the following required arguments:
 - `ref.fa`: reference genome in Fasta format
-- `peaks.txt`: genomic regions file, for example, peak calls from ChIP-seq datasets.
+- `peaks.bed`: genomic regions file, for example, peak calls from ChIP-seq datasets.
 -  `motifs.pwm`: PWMs of all motifs-of-interest. `spyglass` will determine whether these motifs are significantly enriched in `regions.bed`
 
 Additionally, users may choose to specify the optional options below:
@@ -33,7 +33,7 @@ Additionally, users may choose to specify the optional options below:
 
 <a name="formats"></a>
 ## File Formats
-`peaks.txt` is a tab-delimited file with no header. It contains six columns as follows:
+`peaks.bed` is a tab-delimited file in BED format with no header. It contains six columns as follows:
 ```
 chromosome start_coordinate  end_coordinate peak_ID . strand(+/-)
 ```
