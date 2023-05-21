@@ -15,11 +15,18 @@ The basic usage of `spyglass` is:
 ```
 spyglass [other options] ref.fa peaks.bed motifs.pwm
 ```
-To run `spyglass` on our mini test files (see `example-files`):
+To run `spyglass` on our mini test files (see `example_files`):
 ```
 spyglass test_ref.fa test_peaks.bed test_motifs.pwm
 ```
-
+This should produce the output below:
+```
+INSERT OUTPUT
+```
+To compare to output of Homer 'findMotifsGenome.pl', run:
+```
+findMotifsGenome.pl test_peaks.bed test_ref.fa ~/example_files/peakAnalysis
+```
 <a name="options"></a>
 ## spyglass Options
 `spyglass` has the following required arguments:
