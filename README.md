@@ -36,6 +36,7 @@ findMotifsGenome.pl test_peaks.bed test_ref.fa ~/example_files/peakAnalysis
 
 Additionally, users may choose to specify the optional options below:
  - `-b BACKGROUND`, `--background BACKGROUND`: Use custom frequencies for A, T, C, and G where BACKGROUND is a comma-delimited list of frequencies for A, T, C, and G respectively. By default, all bases have a background frequency of 0.25 (`-b 0.25,0.25,0.25,0.25`).
+ - `--version VERSION`: Print the version and quit. 
  - `-o FILE`, `--output FILE`: Write output to this file. By default, output is written to stdout.
 
 <a name="formats"></a>
