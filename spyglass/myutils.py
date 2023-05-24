@@ -3,8 +3,10 @@ Utilities for spyglass
 """
 import math
 import numpy as np
+import os
 import pandas
 import pyfaidx
+import random
 import scipy.stats
 import seqlogo
 import sys
@@ -23,6 +25,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# -------------------- Error Handling --------------------
 def ERROR(msg):
 	"""
 	Print an error message and die
@@ -35,31 +38,72 @@ def ERROR(msg):
 	sys.stderr.write(bcolors.FAIL + "[ERROR]: " + bcolors.ENDC + "{msg}\n".format(msg=msg) )
 	sys.exit(1)
 
+# -------------------- Load sequences --------------------
 def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 	Helper for LoadSeqs; find a specific region of given genome
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	chromosome : str
+	   chromosome of interest
+	start : int
+	   sequence start coordinate
+	end : int
+	   sequence end coordinate
 	"""
-	# CODE HERE
+
+	# return sequence on given chromosome from start coordinate to end coordinate
+	return fasta[chromosome][(start - 1):end].seq	
 	
-def LoadSeqs(fasta, peakBed, bgBed):
+def LoadSeqs(fasta, peakBed):
 	"""
-	Return a list of peak sequences specified in peaks file and a list of bg seqs if specified or randomly generated bg seqs
+	Return a list of peak sequences specified in peaks file
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	peakBed : str
+	   BED-format file containing peak sequence regions
 	"""
-	# CODE HERE
+
+	seqs = []
+	with open(peakBed, 'r') as pb:
+		for line in pb:
+			info = line.strip().split("\t")
+			# append sequence on given chromosome beginning/ending at start/end
+			seqs.append(RetrieveFastaSeq(fasta, info[0], info[1], info[2]))
+	return seqs
+
+def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
+	"""
+	Return a list of randomly generated background peak sequences from given reference genome
+
+	Parameters
+	----------
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	numSeqs : int
+	   number of background sequences
+	seqLen : int
+	   length of background sequences
+	"""
+
+	seqs = []
+	chrs = fasta.keys()
+	for i in range(0, numSeqs):
+		# get a random chromosome
+		chrom = np.random.choice(chrs, 1)
+		# get a random start position on chosen chromosome
+		start = random.randrange(1, len(fasta[chrom].seq) - seqLen)
+		# append sequence on chrom beginning at start of lenth seqLen
+		seqs.append(RetrieveFastaSeq(fasta, chrom, start, start + seqLen))
+	return seqs
+
+	
 
 # -------------------- Score sequences --------------------
 def ScoreSeq(pwm, seq):
