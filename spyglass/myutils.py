@@ -161,15 +161,7 @@ def RandomSequence(n, freqs):
 	"""
 	seq = ""
 	for i in range(n):
-		p = random.uniform(0,1)
-		char = "T"
-		if p <= freqs[0]:
-			char = "A"
-		elif(p <= freqs[0]+freqs[1]):
-			char = "C"
-		elif(p <= freqs[0]+freqs[1]+freqs[2]):
-			char = "G"
-		seq += char
+		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)
 	return seq
 	
 def GetThreshold(pval):
