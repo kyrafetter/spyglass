@@ -28,16 +28,22 @@ def ERROR(msg):
 
 def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
-	Helper for LoadSeqs; find a specific region of given genome
+	Helper for LoadSeqs: returns the sequence at specified coordinates in the ref genome
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx Fasta object
+	   pyfaidx object storing the reference genome
+	chromosome : str
+	   chromosome of interest
+	start : int
+	   start coordinate of sequence
+	end : int
+	   end coordinate of sequence
 	"""
-	# CODE HERE
+
+	
+	
 	
 def LoadSeqs(fasta, peakBed, bgBed):
 	"""
