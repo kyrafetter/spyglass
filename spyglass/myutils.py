@@ -1,7 +1,16 @@
 """
 Utilities for spyglass
 """
+import math
+import numpy as np
+import pandas
+import pyfaidx
+import scipy.stats
+import seqlogo
 import sys
+
+# Global vars
+nucs = {"A": 0, "C": 1, "G": 2, "T": 3}
 
 class bcolors:
     HEADER = '\033[95m'
