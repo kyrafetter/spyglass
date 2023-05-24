@@ -143,18 +143,26 @@ def ComputeNucFreqs(fasta, seq):
 	"""
 	# CODE HERE
 	
-def RandomSequence(n, seq):
+def RandomSequence(n, freqs):
 	"""
-	Description
+	Generate a random sequence of length n with specified nucleotide frequencies
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	n : int
+	   length of sequence
+	freqs : list of floats
+	   list of frequencies [A, C, G, T]
+	
+	Returns
+    -------
+    seq : str
+       random sequence
 	"""
-	# CODE HERE
+	seq = ""
+	for i in range(n):
+		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)
+	return seq
 	
 def GetThreshold(pval):
 	"""
