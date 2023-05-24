@@ -1,7 +1,16 @@
 """
 Utilities for spyglass
 """
+import math
+import numpy as np
+import pandas
+import pyfaidx
+import scipy.stats
+import seqlogo
 import sys
+
+# Global vars
+nucs = {"A": 0, "C": 1, "G": 2, "T": 3}
 
 class bcolors:
     HEADER = '\033[95m'
@@ -28,22 +37,16 @@ def ERROR(msg):
 
 def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
-	Helper for LoadSeqs: returns the sequence at specified coordinates in the ref genome
+	Helper for LoadSeqs; find a specific region of given genome
 
 	Parameters
 	----------
-	fasta : pyfaidx Fasta object
-	   pyfaidx object storing the reference genome
-	chromosome : str
-	   chromosome of interest
-	start : int
-	   start coordinate of sequence
-	end : int
-	   end coordinate of sequence
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
 	"""
-
-	
-	
+	# CODE HERE
 	
 def LoadSeqs(fasta, peakBed, bgBed):
 	"""
