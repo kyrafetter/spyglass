@@ -6,6 +6,7 @@ import numpy as np
 import os
 import pandas
 import pyfaidx
+import random
 import scipy.stats
 import seqlogo
 import sys
@@ -55,8 +56,7 @@ def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 
 	# return sequence on given chromosome from start coordinate to end coordinate
-	return fasta[chromosome][(start - 1):end].seq
-	
+	return fasta[chromosome][(start - 1):end].seq	
 	
 def LoadSeqs(fasta, peakBed):
 	"""
@@ -74,10 +74,11 @@ def LoadSeqs(fasta, peakBed):
 	with open(peakBed, 'r') as pb:
 		for line in pb:
 			info = line.strip().split("\t")
+			# append sequence on given chromosome beginning/ending at start/end
 			seqs.append(RetrieveFastaSeq(fasta, info[0], info[1], info[2]))
 	return seqs
 
-def GenerateRandomBkgSeqs(fasta, numSeqs):
+def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 	"""
 	Return a list of randomly generated background peak sequences from given reference genome
 
@@ -86,11 +87,20 @@ def GenerateRandomBkgSeqs(fasta, numSeqs):
 	fasta : pyfaidx object 
 	   pyfaidx object storing the faidx indexed reference sequence
 	numSeqs : int
-	   number of foreground sequences
+	   number of background sequences
+	seqLen : int
+	   length of background sequences
 	"""
 
 	seqs = []
-	
+	chrs = fasta.keys()
+	for i in range(0, numSeqs):
+		# get a random chromosome
+		chrom = np.random.choice(chrs, 1)
+		# get a random start position on chosen chromosome
+		start = random.randrange(1, len(fasta[chrom].seq))
+		# append sequence on chrom beginning at start of lenth seqLen
+		seqs.append(RetrieveFastaSeq(fasta, chrom, start, start + seqLen))
 	return seqs
 
 	
