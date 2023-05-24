@@ -26,12 +26,119 @@ def ERROR(msg):
 	sys.stderr.write(bcolors.FAIL + "[ERROR]: " + bcolors.ENDC + "{msg}\n".format(msg=msg) )
 	sys.exit(1)
 
-def ScoreSeq(param):
+def RetrieveFastaSeq(fasta, chromosome, start, end):
+	"""
+	Helper for LoadSeqs; find a specific region of given genome
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+	
+def LoadSeqs(fasta, peakBed, bgBed):
+	"""
+	Return a list of peak sequences specified in peaks file and a list of bg seqs if specified or randomly generated bg seqs
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+
+# -------------------- Score sequences --------------------
+def ScoreSeq(pwm, seq):
 	"""
 	Description
 
 	Parameters
 	----------
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+	
+def ReverseComplement(seq):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+
+def FindMaxScore(pwm, seq):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+
+# -------------------- Set the threshold --------------------
+def ComputeNucFreqs(fasta, seq):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+	
+def RandomSequence(n, seq):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+	
+def GetThreshold(pval):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
+	p1 : name
+	   p1 description
+	"""
+	# CODE HERE
+	
+# -------------------- Test Enrichment --------------------	
+def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
+	"""
+	Description
+
+	Parameters
+	----------
+	p1 : name
+	   p1 description
 	p1 : name
 	   p1 description
 	"""
