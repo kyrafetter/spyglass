@@ -12,6 +12,11 @@ spyglass is a PWM (Position Weight Matrix)-based implementaion of a DNA binding 
 - scipy
 - seqlogo
 
+These packages can be installed with `pip`:
+```
+pip install numpy pandas pyfaidx scipy seqlogo
+```
+
 
 
 <a name="install"></a>
