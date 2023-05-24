@@ -98,7 +98,7 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 		# get a random chromosome
 		chrom = np.random.choice(chrs, 1)
 		# get a random start position on chosen chromosome
-		start = random.randrange(1, len(fasta[chrom].seq))
+		start = random.randrange(1, len(fasta[chrom].seq) - seqLen)
 		# append sequence on chrom beginning at start of lenth seqLen
 		seqs.append(RetrieveFastaSeq(fasta, chrom, start, start + seqLen))
 	return seqs
