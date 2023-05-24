@@ -42,6 +42,8 @@ def main():
     else:
         outf = open(args.out, "w")
 
+    # -------------------- Load/Process --------------------
+
     # load fasta file
     if args.reference is not None:
         if not os.path.exists(args.reference):
@@ -51,7 +53,55 @@ def main():
         reffasta = None
         myutils.ERROR("please specify a fasta file")
     
+    # load pwm file
+    PWMList = []
+    # load bed file(s)
+    peak_seqs = LoadSeqs()
+    bg_seqs = Load or generate
 
+    # -------------------- Motif Enrichment --------------------
+    all_seqs = concat (peak_seqs / bg seqs/ rev comp for both)
+    freqs = ComputeNucFreqs(all_seqs)
+    numsim = 10000 # can change
+    pval = 0.01 # default - option?
+
+    for i in range(len(PWMList)):
+        null_scores = [ScoreSeq(PWMList[i], RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
+        thresh = GetThreshold(null_scores, pval)
+        num_peak_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
+        num_bg_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
+        enriched_pval = ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
+        print stuff
+
+
+    # -------------------- Notes from lab exercises -------------------- 
+    freqs = ComputeNucFreqs(peak_seqs+bg_seqs+[ReverseComplement(item) for item in peak_seqs] + [ReverseComplement(item) for item in bg_seqs])
+    numsim = 10000
+    pval = 0.01
+
+    pwm_thresholds = []
+    fig = plt.figure()
+    fig.set_size_inches((10, 4))
+    for i in range(3):
+        null_scores = [ScoreSeq(PWMList[i], RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
+        thresh = GetThreshold(null_scores, pval)
+        ax = fig.add_subplot(1, 3, i+1)
+        ax.hist(null_scores, bins=10);
+        ax.axvline(x=thresh, color="red")
+        ax.set_xlabel("Score")
+        ax.set_ylabel("Frequency");
+        ax.set_title(pwm_names[i])
+        pwm_thresholds.append(thresh)
+    fig.tight_layout()
+
+    for i in range(len(PWMList)):
+        pwm = PWMList[i]
+        thresh = pwm_thresholds[i]
+        num_peak_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
+        num_bg_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
+        pval = ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
+        print("PWM: %s, %s/%s peaks, %s/%s background; p-val: %s"%(pwm_names[i], num_peak_pass, len(peak_seqs), num_bg_pass, len(bg_seqs), pval))
+        
 
 
 
