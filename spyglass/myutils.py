@@ -8,7 +8,7 @@ import pyfaidx
 import scipy.stats
 import seqlogo
 import sys
-
+ 
 # Global vars
 nucs = {"A": 0, "C": 1, "G": 2, "T": 3}
 
@@ -64,40 +64,70 @@ def LoadSeqs(fasta, peakBed, bgBed):
 # -------------------- Score sequences --------------------
 def ScoreSeq(pwm, seq):
 	"""
-	Description
+	Get the PWM score for a sequence
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	"""
-	# CODE HERE
+	pwm : 2d np.array
+		position weight matrix
+	seq : str
+		sequence of nucleotides
+
+	Returns
+    -------
+    score : float
+       PWM score of seq
+    """
+	score = 0
+	# Increment score by the corresponding A/C/T/G value for each position in the PWM
+	for i in range(len(seq)):
+		score += pwm[nucs.get(seq[i],i)]
+	return score
 	
 def ReverseComplement(seq):
 	"""
-	Description
+	Get the reverse complement of a sequence
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	seq : str
+	   sequence of nucleotides
+	
+	Returns
+    -------
+    rev : str
+       reverse complement of seq
 	"""
-	# CODE HERE
+	revcomp = ""
+	revdict = {"A": "T", "C": "G", "G": "C", "T": "A"}
+	# For each letter in seq, prepend its complement base to revcomp
+	for c in seq:
+		revcomp = revdict.get(c) + revcomp
+	return revcomp
 
 def FindMaxScore(pwm, seq):
 	"""
-	Description
-
+	Get the highest PWM match for a sequence
+	[TODO: option to calculate without reverse complement]
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
-	"""
-	# CODE HERE
+	pwm : 2d np.array
+		position weight matrix
+	seq : str
+		sequence of nucleotides
+
+	Returns
+    -------
+    max_score : float
+       top PWM score of seq
+    """
+	max_score = -1*np.inf
+	n = pwm.shape[1]
+	rev = ReverseComplement(seq)
+	# Iterate through all n-length subseqs and compare the forward and reverse scores
+	for i in range(len(seq)-n+1):
+		max_score = max(max_score, ScoreSeq(pwm,seq[i:i+n]), ScoreSeq(pwm,rev[i:i+n]))
+	return max_score
 
 # -------------------- Set the threshold --------------------
 def ComputeNucFreqs(fasta, seq):
