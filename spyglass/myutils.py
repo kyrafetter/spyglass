@@ -3,6 +3,7 @@ Utilities for spyglass
 """
 import math
 import numpy as np
+import os
 import pandas
 import pyfaidx
 import scipy.stats
@@ -44,30 +45,55 @@ def RetrieveFastaSeq(fasta, chromosome, start, end):
 	Parameters
 	----------
 	fasta : pyfaidx object 
-	   pyfaidx object storing the 
+	   pyfaidx object storing the faidx indexed reference sequence
 	chromosome : str
 	   chromosome of interest
 	start : int
-	   p1 description
+	   sequence start coordinate
 	end : int
-	   p1 description
+	   sequence end coordinate
 	"""
 
+	# return sequence on given chromosome from start coordinate to end coordinate
 	return fasta[chromosome][(start - 1):end].seq
 	
 	
-def LoadSeqs(fasta, peakBed, bgBed):
+def LoadSeqs(fasta, peakBed):
 	"""
-	Return a list of peak sequences specified in peaks file and a list of bg seqs if specified or randomly generated bg seqs
+	Return a list of peak sequences specified in peaks file
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	peakBed : str
+	   BED-format file containing peak sequence regions
 	"""
-	# CODE HERE
+
+	seqs = []
+	with open(peakBed, 'r') as pb:
+		for line in pb:
+			info = line.strip().split("\t")
+			seqs.append(RetrieveFastaSeq(fasta, info[0], info[1], info[2]))
+	return seqs
+
+def GenerateRandomBkgSeqs(fasta, numSeqs):
+	"""
+	Return a list of randomly generated background peak sequences from given reference genome
+
+	Parameters
+	----------
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	numSeqs : int
+	   number of foreground sequences
+	"""
+
+	seqs = []
+	
+	return seqs
+
+	
 
 # -------------------- Score sequences --------------------
 def ScoreSeq(pwm, seq):
