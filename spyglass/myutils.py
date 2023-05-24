@@ -100,15 +100,16 @@ def FindMaxScore(pwm, seq):
 	# CODE HERE
 
 # -------------------- Set the threshold --------------------
+
 def ComputeNucFreqs(fasta, seq):
 	"""
-	Description
+	Return freqs of ACGT
 
 	Parameters
 	----------
-	p1 : name
+	fasta : str
 	   p1 description
-	p1 : name
+	seq : str
 	   p1 description
 	"""
 	# CODE HERE
@@ -126,13 +127,13 @@ def RandomSequence(n, seq):
 	"""
 	# CODE HERE
 	
-def GetThreshold(pval):
+def GetThreshold(pvalue):
 	"""
-	Description
+	Score threshold for p-value
 
 	Parameters
 	----------
-	p1 : name
+	pvalue : float
 	   p1 description
 	p1 : name
 	   p1 description
@@ -146,9 +147,13 @@ def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	peak_total : int
+	   number of peaks
+	peak_motif : int
+	   number of peaks matching motif 
+	bg_total : int
+		number of background sequences
+	bg_motif : int
+		number of background sequences matching motif
 	"""
 	# CODE HERE
