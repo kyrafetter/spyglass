@@ -23,6 +23,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# -------------------- Error Handling --------------------
 def ERROR(msg):
 	"""
 	Print an error message and die
@@ -35,18 +36,25 @@ def ERROR(msg):
 	sys.stderr.write(bcolors.FAIL + "[ERROR]: " + bcolors.ENDC + "{msg}\n".format(msg=msg) )
 	sys.exit(1)
 
+# -------------------- Load sequences --------------------
 def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 	Helper for LoadSeqs; find a specific region of given genome
 
 	Parameters
 	----------
-	p1 : name
+	fasta : pyfaidx object 
+	   pyfaidx object storing the 
+	chromosome : str
+	   chromosome of interest
+	start : int
 	   p1 description
-	p1 : name
+	end : int
 	   p1 description
 	"""
-	# CODE HERE
+
+	return fasta[chromosome][(start - 1):end].seq
+	
 	
 def LoadSeqs(fasta, peakBed, bgBed):
 	"""
