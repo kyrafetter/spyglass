@@ -7,7 +7,7 @@ Similar to Homer findMotifsGenome.pl and Meme Suite SEA
 """
 
 import argparse
-import . myutils as myutils
+from . import myutils as myutils
 from spyglass import __version__
 import os
 import pyfaidx
