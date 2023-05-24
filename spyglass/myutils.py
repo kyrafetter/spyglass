@@ -108,12 +108,14 @@ def ComputeNucFreqs(fasta, seq):
 	Parameters
 	----------
 	fasta : str
-	   p1 description
+	   given fasta sequence to compute frequencies from
 	seq : str
-	   p1 description
+	   sequence list
 	"""
 	# CODE HERE
 	
+
+# don't need to do this one	
 def RandomSequence(n, seq):
 	"""
 	Description
@@ -126,24 +128,26 @@ def RandomSequence(n, seq):
 	   p1 description
 	"""
 	# CODE HERE
-	
+
+
+
 def GetThreshold(pvalue):
 	"""
-	Score threshold for p-value
+	Score threshold for pvalue
 
 	Parameters
 	----------
 	pvalue : float
-	   p1 description
-	p1 : name
-	   p1 description
+	   percentage of values that are above pvalue threshold
 	"""
 	# CODE HERE
 	
+
+
 # -------------------- Test Enrichment --------------------	
 def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 	"""
-	Description
+	Compute fisher exact test for whether motif is enriched in bound sequences
 
 	Parameters
 	----------
