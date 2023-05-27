@@ -21,8 +21,10 @@ pip install numpy pandas pyfaidx scipy seqlogo
 
 <a name="install"></a>
 ## Installation
-Once required libraries are installed (please see [Prerequisites](#prerequisites)), please install `spyglass` with the following command:
+Once required libraries are installed (please see [Prerequisites](#prerequisites)), please install `spyglass` with the following commands:
 ```
+git clone https://github.com/kyrafetter/spyglass.git
+cd spyglass
 python setup.py install
 ```
 Note: if you do not have root access, you can run the command above with additional options to install locally:
