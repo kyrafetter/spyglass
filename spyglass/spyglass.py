@@ -165,7 +165,6 @@ def main():
 
 
     outf.close()
-    log.close()
     sys.exit(0)
 
 if __name__ == "__main__":
