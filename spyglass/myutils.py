@@ -175,14 +175,12 @@ def FindMaxScore(pwm, seq):
 
 # -------------------- Set the threshold --------------------
 
-def ComputeNucFreqs(fasta, sequences):
+def ComputeNucFreqs(sequences):
 	"""
 	Return freqs of ACGT
 
 	Parameters
 	----------
-	fasta : str
-	   given fasta sequence to compute frequencies from
 	sequences : str
 	   sequence list
 
@@ -226,7 +224,7 @@ def RandomSequence(n, freqs):
 	return seq
 
 	
-def GetThreshold(pval):
+def GetThreshold(null_dist, pval):
 	"""
 	Score threshold for pvalue
 
@@ -245,7 +243,7 @@ def GetThreshold(pval):
 	thresh = 0
 	null_dist_sorted = sorted(null_dist, reverse = True)
 	# set score threshold to obtain pvalue
-	thresh = null_dist_sorted[int(len(null_dist) * pvalue)]
+	thresh = null_dist_sorted[int(len(null_dist) * pval)]
 	return thresh
 
 
