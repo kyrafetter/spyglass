@@ -55,7 +55,7 @@ def main():
         log = open(args.log, "w")
     log.write("Welcome to spyglass!\n")
     log.write("Start time: ")
-    log.write(datetime.datetime.now())
+    log.write(str(datetime.datetime.now()))
     log.write("\n\n")
 
 
