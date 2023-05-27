@@ -72,11 +72,14 @@ def LoadSeqs(fasta, peakBed):
 
 	seqs = []
 	with open(peakBed, 'r') as pb:
+		numPeaks = 0
 		for line in pb:
 			info = line.strip().split("\t")
 			# append sequence on given chromosome beginning/ending at start/end
 			seqs.append(RetrieveFastaSeq(fasta, info[0], info[1], info[2]))
-	return seqs
+			numPeaks = numPeaks + 1
+			seqLen = info[2] - info[1] + 1
+	return seqs, numPeaks, seqLen
 
 def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 	"""
