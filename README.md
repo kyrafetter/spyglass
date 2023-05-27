@@ -59,9 +59,13 @@ findMotifsGenome.pl test_peaks.bed test_ref.fa ~/example_files/peakAnalysis
 -  `motifs.pwm`: PWMs of all motifs-of-interest. `spyglass` will determine whether these motifs are significantly enriched in `regions.bed`
 
 Additionally, users may choose to specify the optional options below:
- - `-b BACKGROUND`, `--background BACKGROUND`: Use custom frequencies for A, T, C, and G where BACKGROUND is a comma-delimited list of frequencies for A, T, C, and G respectively. By default, all bases have a background frequency of 0.25 (`-b 0.25,0.25,0.25,0.25`).
- - `--version VERSION`: Print the version and quit. 
+ - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. By default, background sequences will be chosen randomly from the reference genome.
  - `-o FILE`, `--output FILE`: Write output to this file. By default, output is written to stdout.
+ - `-l LOGFILE`, `--logfile LOGFILE`: Write input file paths used and runtime to this file. 
+ - `-p PVAL`, `--pval PVAL`: P-value threshold to be compared with Fisher exact test p-value for significant enrichment. 
+ - `-r REVERSE`, `--reverse REVERSE`: Consider reverse complement in enrichment analysis. 
+ - `-s SEQLOGO`, `--seqlogo SEQLOGO`: Generate motif logo of enriched motifs. 
+ - `--version VERSION`: Print the version and quit. 
 
 <a name="formats"></a>
 ## File Formats
