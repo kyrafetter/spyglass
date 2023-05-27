@@ -175,7 +175,7 @@ def FindMaxScore(pwm, seq):
 
 # -------------------- Set the threshold --------------------
 
-def ComputeNucFreqs(fasta, seq):
+def ComputeNucFreqs(fasta, sequences):
 	"""
 	Return freqs of ACGT
 
@@ -183,7 +183,7 @@ def ComputeNucFreqs(fasta, seq):
 	----------
 	fasta : str
 	   given fasta sequence to compute frequencies from
-	seq : str
+	sequences : str
 	   sequence list
 
 	Returns
@@ -191,9 +191,20 @@ def ComputeNucFreqs(fasta, seq):
 	freqs : list of float
 		frequencies of A, C, G, T in the sequences
 	"""
-	# CODE HERE
+	# default frequency distribution for A, C, G, T
+	freqs = [0.25, 0.25, 0.25, 0.25]
+    # calculate specific frequencies
+	counter = 0
+	freqs = [0,0,0,0]
+
+	for seq in sequences:
+		counter += len(seq)
+		for i, nuc in enumerate(["A", "C", "G", "T"]):
+			freqs[i] += seq.count(nuc)
+		freqs = [f / counter for f in freqs]
+	return freqs
 	
-def RandomSequence(n, seq):
+def RandomSequence(n, freqs):
 	"""
 	Generate a random sequence of length n with specified nucleotide frequencies
 
@@ -209,7 +220,11 @@ def RandomSequence(n, seq):
     seq : str
        random sequence
 	"""
-	# CODE HERE
+	seq = ""
+	for i in range(n):
+		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)
+	return seq
+
 	
 def GetThreshold(pval):
 	"""
@@ -227,7 +242,6 @@ def GetThreshold(pval):
 	threshold : float
 		threshold to achieve desired pvalue
 	"""
-	# CODE HERE
 	thresh = 0
 	null_dist_sorted = sorted(null_dist, reverse = True)
 	# set score threshold to obtain pvalue
@@ -256,7 +270,6 @@ def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 	pvalue : float
 		fisher exact test pvalue
 	"""
-	# CODE HERE
 	pval = -1
 	contingency_table = [[peak_motif, peak_total - peak_motif], [bg_motif, bg_total - bg_motif]]
 	odds, pval = fisher_exact(contingency_table)
