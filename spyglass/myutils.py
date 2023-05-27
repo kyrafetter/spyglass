@@ -128,7 +128,7 @@ def ScoreSeq(pwm, seq):
 	score = 0
 	# Increment score by the corresponding A/C/T/G value for each position in the PWM
 	for i in range(len(seq)):
-		score += pwm[nucs.get(seq[i],i)]
+		score = score + pwm[nucs[seq[i]]][i]
 	return score
 	
 def ReverseComplement(seq):
@@ -193,16 +193,15 @@ def ComputeNucFreqs(sequences):
 		frequencies of A, C, G, T in the sequences
 	"""
 	# default frequency distribution for A, C, G, T
-	freqs = [0.25, 0.25, 0.25, 0.25]
+	#freqs = [0.25, 0.25, 0.25, 0.25]
     # calculate specific frequencies
 	counter = 0
 	freqs = [0,0,0,0]
-
 	for seq in sequences:
 		counter += len(seq)
 		for i, nuc in enumerate(["A", "C", "G", "T"]):
 			freqs[i] += seq.count(nuc)
-		freqs = [f / counter for f in freqs]
+	freqs = [f / counter for f in freqs]
 	return freqs
 	
 def RandomSequence(n, freqs):
@@ -233,7 +232,7 @@ def GetThreshold(null_dist, pval):
 
 	Parameters
 	----------
-	null_dist : float
+	null_dist : list of floats
 		scores null distribution
 	pvalue : float
 	   percentage of values that are above pvalue threshold
@@ -244,9 +243,10 @@ def GetThreshold(null_dist, pval):
 		threshold to achieve desired pvalue
 	"""
 	thresh = 0
-	null_dist_sorted = sorted(null_dist, reverse = True)
+	#print(null_dist)
+	null_dist.sort(reverse = True)
 	# set score threshold to obtain pvalue
-	thresh = null_dist_sorted[int(len(null_dist) * pval)]
+	thresh = null_dist[int(len(null_dist) * pval)]
 	return thresh
 
 
@@ -273,5 +273,5 @@ def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 	"""
 	pval = -1
 	contingency_table = [[peak_motif, peak_total - peak_motif], [bg_motif, bg_total - bg_motif]]
-	odds, pval = fisher_exact(contingency_table)
+	odds, pval = scipy.stats.fisher_exact(contingency_table)
 	return pval

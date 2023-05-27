@@ -14,6 +14,7 @@ import pyfaidx
 import sys
 import datetime
 import numpy as np
+import seqlogo
 
 def main():
 
@@ -94,6 +95,29 @@ def main():
     else:
         myutils.ERROR("please specify a motifs pwm file")
 
+    pfm_1 = np.array([
+    [35.0,92.0,146.0,226.0],
+    [28.0,281.0,71.0,119.0],
+    [25.0,272.0,8.0,194.0],
+    [219.0,6.0,4.0,270.0],
+    [1.0,11.0,5.0,482.0],
+    [7.0,1.0,2.0,489.0],
+    [39.0,76.0,372.0,12.0],
+    [52.0,1.0,12.0,434.0],
+    [113.0,124.0,78.0,184.0],
+    [340.0,39.0,33.0,87.0],
+    [36.0,5.0,19.0,439.0],
+    [19.0,29.0,375.0,76.0],
+    [24.0,317.0,59.0,99.0],
+    [279.0,51.0,17.0,152.0],
+    [277.0,47.0,72.0,103.0],
+    [386.0,19.0,38.0,56.0]
+    ]).transpose()
+    for pfm in [pfm_1]:
+        seq_pfm = seqlogo.Pfm(pfm/np.sum(pfm, 0)[0]) # normalize to probabilities rather than counts
+        seq_ppm = seqlogo.Ppm(seqlogo.pfm2ppm(seq_pfm))
+        PWMList.append(np.array(seqlogo.ppm2pwm(seq_ppm)).transpose())
+
     # load foreground bed file
     if args.peaks is not None:
         if not os.path.exists(args.peaks):
@@ -127,7 +151,9 @@ def main():
     enriched_pval = args.pval if args.pval is not None else 0.0000001
 
     for i in range(len(PWMList)):
-        log.write("Motif ", i, ": ")
+        log.write("Motif ")
+        log.write(str(i))
+        log.write(":")
         # generate null dist of random seqs
         null_scores = [myutils.ScoreSeq(PWMList[i], myutils.RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
         # compute score significance threshold
@@ -135,16 +161,18 @@ def main():
         thresh = myutils.GetThreshold(null_scores, null_pval)
         # get number of matches above threshold
         log.write("finding matches... ")
-        num_peak_pass = np.sum([int(myutils.FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
-        num_bg_pass = np.sum([int(myutils.FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
+        num_peak_pass = np.sum([int(myutils.FindMaxScore(PWMList[i], seq) > thresh) for seq in peak_seqs])
+        num_bg_pass = np.sum([int(myutils.FindMaxScore(PWMList[i], seq) > thresh) for seq in bg_seqs])
         # perform fisher exact test
         log.write("performing fisher's exact test...\n")
         fisher_pval = myutils.ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
         enriched = "yes" if fisher_pval < enriched_pval else "no"
         # output
-        outf.write("\t".join([pwm_names[i], num_peak_pass+"/"+len(peak_seqs), num_bg_pass+"/"+len(bg_seqs), fisher_pval, enriched]))
+        outf.write("\t".join([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), str(fisher_pval), enriched]))
+        outf.write("\n")
     log.write("End time: ")
     log.write(str(datetime.datetime.now()))
+    log.write("\n")
 
     log.close()
     outf.close()
