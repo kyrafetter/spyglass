@@ -60,53 +60,34 @@ def main():
     bg_seqs = Load or generate
 
     # -------------------- Motif Enrichment --------------------
-    all_seqs = concat (peak_seqs / bg seqs/ rev comp for both)
-    freqs = ComputeNucFreqs(all_seqs)
-    numsim = 10000 # can change
-    pval = 0.01 # default - option?
-
-    for i in range(len(PWMList)):
-        null_scores = [ScoreSeq(PWMList[i], RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
-        thresh = GetThreshold(null_scores, pval)
-        num_peak_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
-        num_bg_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
-        enriched_pval = ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
-        print stuff
-
-
-    # -------------------- Notes from lab exercises -------------------- 
-    freqs = ComputeNucFreqs(peak_seqs+bg_seqs+[ReverseComplement(item) for item in peak_seqs] + [ReverseComplement(item) for item in bg_seqs])
+    reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
+    
+    # initialize vars for null dist sim
+    freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
     numsim = 10000
-    pval = 0.01
-
-    pwm_thresholds = []
-    fig = plt.figure()
-    fig.set_size_inches((10, 4))
-    for i in range(3):
-        null_scores = [ScoreSeq(PWMList[i], RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
-        thresh = GetThreshold(null_scores, pval)
-        ax = fig.add_subplot(1, 3, i+1)
-        ax.hist(null_scores, bins=10);
-        ax.axvline(x=thresh, color="red")
-        ax.set_xlabel("Score")
-        ax.set_ylabel("Frequency");
-        ax.set_title(pwm_names[i])
-        pwm_thresholds.append(thresh)
-    fig.tight_layout()
+    null_pval = 0.01
+    enriched_pval = args.pval if args.pval is not None else 0.0000001
 
     for i in range(len(PWMList)):
-        pwm = PWMList[i]
-        thresh = pwm_thresholds[i]
-        num_peak_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
-        num_bg_pass = np.sum([int(FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
-        pval = ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
-        print("PWM: %s, %s/%s peaks, %s/%s background; p-val: %s"%(pwm_names[i], num_peak_pass, len(peak_seqs), num_bg_pass, len(bg_seqs), pval))
-        
+        log.write("Motif ", i, ": ")
+        # generate null dist of random seqs
+        null_scores = [myutils.ScoreSeq(PWMList[i], myutils.RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
+        # compute score significance threshold
+        log.write("Starting thresholding... ")
+        thresh = myutils.GetThreshold(null_scores, null_pval)
+        # get number of matches above threshold
+        log.write("finding matches... ")
+        num_peak_pass = np.sum([int(myutils.FindMaxScore(pwm, seq)>thresh) for seq in peak_seqs])
+        num_bg_pass = np.sum([int(myutils.FindMaxScore(pwm, seq)>thresh) for seq in bg_seqs])
+        # perform fisher exact test
+        log.write("performing fisher's exact test...\n")
+        fisher_pval = myutils.ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
+        enriched = "yes" if fisher_pval < enriched_pval else "no"
+        # output
+        outf.write("\t".join([pwm_names[i], num_peak_pass+"/"+len(peak_seqs), num_bg_pass+"/"+len(bg_seqs), fisher_pval, enriched]))
+    log.write("End time: ", datetime.datetime.now())
 
-
-
-
-
+    log.close()
     outf.close()
     sys.exit(0)
 
