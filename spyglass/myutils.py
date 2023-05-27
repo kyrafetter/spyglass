@@ -122,27 +122,16 @@ def ComputeNucFreqs(fasta, seq):
 	freqs = [0.25, 0.25, 0.25, 0.25]
 	# calculate specific frequencies 
 	counter = 0
-	A_dist = 0
-	C_dist = 0
-	G_dist = 0
-	T_dist = 0
-	for i in range(len(seq)):
-		counter += 1
-		if(seq.get(i) == "A"):
-			A_dist += 1
-		elif(seq.get(i) == "C"):
-			C_dist += 1
-		elif(seq.get(i) == "G"):
-			G_dist += 1
-		else 
-			T_dist += 1	
-	freqs[0] = A_dist 
-
-
-
+	freqs = [0,0,0,0]
 	
+	for seq in sequences:
+		counter += len(seq)
+		for i, nuc in enumerate(["A", "C", "G", "T"]):
+			freqs[i] += seq.count(nuc)
+		freqs = [f / counter for f in freqs]
+	return freqs
 
-# don't need to do this one	
+
 def RandomSequence(n, seq):
 	"""
 	Description
@@ -157,13 +146,14 @@ def RandomSequence(n, seq):
 	# CODE HERE
 
 
-
-def GetThreshold(pvalue):
+def GetThreshold(null_dist, pvalue):
 	"""
 	Score threshold for pvalue
 
 	Parameters
 	----------
+	null_dist : float
+		scores null distribution
 	pvalue : float
 	   percentage of values that are above pvalue threshold
 
@@ -173,7 +163,11 @@ def GetThreshold(pvalue):
 		threshold to achieve desired pvalue
 	"""
 	# CODE HERE
-	
+	thresh = 0
+	null_dist_sorted = sorted(null_dist, reverse = True)
+	# set score threshold to obtain pvalue
+	thresh = null_dist_sorted[int(len(null_dist) * pvalue)]
+	return thresh
 
 
 # -------------------- Test Enrichment --------------------	
@@ -198,3 +192,7 @@ def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 		fisher exact test pvalue
 	"""
 	# CODE HERE
+	pval = -1
+	contingency_table = [[peak_motif, peak_total - peak_motif], [bg_motif, bg_total - bg_motif]]
+	odds, pval = fisher_exact(contingency_table)
+	return pval
