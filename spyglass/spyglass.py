@@ -30,7 +30,7 @@ def main():
 
     # output
     parser.add_argument("-o", "--output", help = "write output to file. Default: stdout", metavar = "FILE", type = str, required = False)
-    parser.add_argument("-l", "--logfile", help = "write log to file. Default: stderr", metavar = "FILE", type = str, required = False)
+    parser.add_argument("-l", "--log", help = "write log to file. Default: stderr", metavar = "FILE", type = str, required = False)
 
     # optional options
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
