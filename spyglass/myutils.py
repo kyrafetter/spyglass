@@ -174,18 +174,33 @@ def FindMaxScore(pwm, seq):
 	return max_score
 
 # -------------------- Set the threshold --------------------
-def ComputeNucFreqs(fasta, seq):
+
+def ComputeNucFreqs(sequences):
 	"""
-	Description
+	Return freqs of ACGT
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	sequences : str
+	   sequence list
+
+	Returns
+	----------
+	freqs : list of float
+		frequencies of A, C, G, T in the sequences
 	"""
-	# CODE HERE
+	# default frequency distribution for A, C, G, T
+	freqs = [0.25, 0.25, 0.25, 0.25]
+    # calculate specific frequencies
+	counter = 0
+	freqs = [0,0,0,0]
+
+	for seq in sequences:
+		counter += len(seq)
+		for i, nuc in enumerate(["A", "C", "G", "T"]):
+			freqs[i] += seq.count(nuc)
+		freqs = [f / counter for f in freqs]
+	return freqs
 	
 def RandomSequence(n, freqs):
 	"""
@@ -207,30 +222,53 @@ def RandomSequence(n, freqs):
 	for i in range(n):
 		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)
 	return seq
+
 	
-def GetThreshold(pval):
+def GetThreshold(null_dist, pval):
 	"""
-	Description
+	Score threshold for pvalue
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	null_dist : float
+		scores null distribution
+	pvalue : float
+	   percentage of values that are above pvalue threshold
+
+	Returns
+	----------
+	threshold : float
+		threshold to achieve desired pvalue
 	"""
-	# CODE HERE
-	
+	thresh = 0
+	null_dist_sorted = sorted(null_dist, reverse = True)
+	# set score threshold to obtain pvalue
+	thresh = null_dist_sorted[int(len(null_dist) * pval)]
+	return thresh
+
+
 # -------------------- Test Enrichment --------------------	
 def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 	"""
-	Description
+	Compute fisher exact test for whether motif is enriched in bound sequences
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	peak_total : int
+	   number of peaks
+	peak_motif : int
+	   number of peaks matching motif 
+	bg_total : int
+		number of background sequences
+	bg_motif : int
+		number of background sequences matching motif
+	
+	Returns
+	----------
+	pvalue : float
+		fisher exact test pvalue
 	"""
-	# CODE HERE
+	pval = -1
+	contingency_table = [[peak_motif, peak_total - peak_motif], [bg_motif, bg_total - bg_motif]]
+	odds, pval = fisher_exact(contingency_table)
+	return pval
