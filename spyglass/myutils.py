@@ -3,12 +3,14 @@ Utilities for spyglass
 """
 import math
 import numpy as np
+import os
 import pandas
 import pyfaidx
+import random
 import scipy.stats
 import seqlogo
 import sys
-
+ 
 # Global vars
 nucs = {"A": 0, "C": 1, "G": 2, "T": 3}
 
@@ -23,6 +25,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# -------------------- Error Handling --------------------
 def ERROR(msg):
 	"""
 	Print an error message and die
@@ -35,69 +38,140 @@ def ERROR(msg):
 	sys.stderr.write(bcolors.FAIL + "[ERROR]: " + bcolors.ENDC + "{msg}\n".format(msg=msg) )
 	sys.exit(1)
 
+# -------------------- Load sequences --------------------
 def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 	Helper for LoadSeqs; find a specific region of given genome
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	chromosome : str
+	   chromosome of interest
+	start : int
+	   sequence start coordinate
+	end : int
+	   sequence end coordinate
 	"""
-	# CODE HERE
+
+	# return sequence on given chromosome from start coordinate to end coordinate
+	return fasta[chromosome][(start - 1):end].seq	
 	
-def LoadSeqs(fasta, peakBed, bgBed):
+def LoadSeqs(fasta, peakBed):
 	"""
-	Return a list of peak sequences specified in peaks file and a list of bg seqs if specified or randomly generated bg seqs
+	Return a list of peak sequences specified in peaks file
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	peakBed : str
+	   BED-format file containing peak sequence regions
 	"""
-	# CODE HERE
+
+	seqs = []
+	with open(peakBed, 'r') as pb:
+		for line in pb:
+			info = line.strip().split("\t")
+			# append sequence on given chromosome beginning/ending at start/end
+			seqs.append(RetrieveFastaSeq(fasta, info[0], info[1], info[2]))
+	return seqs
+
+def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
+	"""
+	Return a list of randomly generated background peak sequences from given reference genome
+
+	Parameters
+	----------
+	fasta : pyfaidx object 
+	   pyfaidx object storing the faidx indexed reference sequence
+	numSeqs : int
+	   number of background sequences
+	seqLen : int
+	   length of background sequences
+	"""
+
+	seqs = []
+	chrs = fasta.keys()
+	for i in range(0, numSeqs):
+		# get a random chromosome
+		chrom = np.random.choice(chrs, 1)
+		# get a random start position on chosen chromosome
+		start = random.randrange(1, len(fasta[chrom].seq) - seqLen)
+		# append sequence on chrom beginning at start of lenth seqLen
+		seqs.append(RetrieveFastaSeq(fasta, chrom, start, start + seqLen))
+	return seqs
+
+	
 
 # -------------------- Score sequences --------------------
 def ScoreSeq(pwm, seq):
 	"""
-	Description
+	Get the PWM score for a sequence
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	"""
-	# CODE HERE
+	pwm : 2d np.array
+		position weight matrix
+	seq : str
+		sequence of nucleotides
+
+	Returns
+    -------
+    score : float
+       PWM score of seq
+    """
+	score = 0
+	# Increment score by the corresponding A/C/T/G value for each position in the PWM
+	for i in range(len(seq)):
+		score += pwm[nucs.get(seq[i],i)]
+	return score
 	
 def ReverseComplement(seq):
 	"""
-	Description
+	Get the reverse complement of a sequence
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	seq : str
+	   sequence of nucleotides
+	
+	Returns
+    -------
+    rev : str
+       reverse complement of seq
 	"""
-	# CODE HERE
+	revcomp = ""
+	revdict = {"A": "T", "C": "G", "G": "C", "T": "A"}
+	# For each letter in seq, prepend its complement base to revcomp
+	for c in seq:
+		revcomp = revdict.get(c) + revcomp
+	return revcomp
 
 def FindMaxScore(pwm, seq):
 	"""
-	Description
-
+	Get the highest PWM match for a sequence
+	[TODO: option to calculate without reverse complement]
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
-	"""
-	# CODE HERE
+	pwm : 2d np.array
+		position weight matrix
+	seq : str
+		sequence of nucleotides
+
+	Returns
+    -------
+    max_score : float
+       top PWM score of seq
+    """
+	max_score = -1*np.inf
+	n = pwm.shape[1]
+	rev = ReverseComplement(seq)
+	# Iterate through all n-length subseqs and compare the forward and reverse scores
+	for i in range(len(seq)-n+1):
+		max_score = max(max_score, ScoreSeq(pwm,seq[i:i+n]), ScoreSeq(pwm,rev[i:i+n]))
+	return max_score
 
 # -------------------- Set the threshold --------------------
 
@@ -118,35 +192,26 @@ def ComputeNucFreqs(fasta, seq):
 		frequencies of A, C, G, T in the sequences
 	"""
 	# CODE HERE
-	# default frequency distribution for A, C, G, T
-	freqs = [0.25, 0.25, 0.25, 0.25]
-	# calculate specific frequencies 
-	counter = 0
-	freqs = [0,0,0,0]
 	
-	for seq in sequences:
-		counter += len(seq)
-		for i, nuc in enumerate(["A", "C", "G", "T"]):
-			freqs[i] += seq.count(nuc)
-		freqs = [f / counter for f in freqs]
-	return freqs
-
-
 def RandomSequence(n, seq):
 	"""
-	Description
+	Generate a random sequence of length n with specified nucleotide frequencies
 
 	Parameters
 	----------
-	p1 : name
-	   p1 description
-	p1 : name
-	   p1 description
+	n : int
+	   length of sequence
+	freqs : list of floats
+	   list of frequencies [A, C, G, T]
+	
+	Returns
+    -------
+    seq : str
+       random sequence
 	"""
 	# CODE HERE
-
-
-def GetThreshold(null_dist, pvalue):
+	
+def GetThreshold(pval):
 	"""
 	Score threshold for pvalue
 
