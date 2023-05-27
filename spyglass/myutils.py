@@ -111,8 +111,35 @@ def ComputeNucFreqs(fasta, seq):
 	   given fasta sequence to compute frequencies from
 	seq : str
 	   sequence list
+
+	Returns
+	----------
+	freqs : list of float
+		frequencies of A, C, G, T in the sequences
 	"""
 	# CODE HERE
+	# default frequency distribution for A, C, G, T
+	freqs = [0.25, 0.25, 0.25, 0.25]
+	# calculate specific frequencies 
+	counter = 0
+	A_dist = 0
+	C_dist = 0
+	G_dist = 0
+	T_dist = 0
+	for i in range(len(seq)):
+		counter += 1
+		if(seq.get(i) == "A"):
+			A_dist += 1
+		elif(seq.get(i) == "C"):
+			C_dist += 1
+		elif(seq.get(i) == "G"):
+			G_dist += 1
+		else 
+			T_dist += 1	
+	freqs[0] = A_dist 
+
+
+
 	
 
 # don't need to do this one	
@@ -139,6 +166,11 @@ def GetThreshold(pvalue):
 	----------
 	pvalue : float
 	   percentage of values that are above pvalue threshold
+
+	Returns
+	----------
+	threshold : float
+		threshold to achieve desired pvalue
 	"""
 	# CODE HERE
 	
@@ -159,5 +191,10 @@ def ComputeEnrichment(peak_total, peak_motif, bg_total, bg_motif):
 		number of background sequences
 	bg_motif : int
 		number of background sequences matching motif
+	
+	Returns
+	----------
+	pvalue : float
+		fisher exact test pvalue
 	"""
 	# CODE HERE
