@@ -144,7 +144,7 @@ def main():
         # output
         outf.write("\t".join([pwm_names[i], num_peak_pass+"/"+len(peak_seqs), num_bg_pass+"/"+len(bg_seqs), fisher_pval, enriched]))
     log.write("End time: ")
-    log.write(datetime.datetime.now())
+    log.write(str(datetime.datetime.now()))
 
     log.close()
     outf.close()
