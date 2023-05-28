@@ -16,8 +16,10 @@ These packages can be installed with `pip`:
 ```
 pip install numpy pandas pyfaidx scipy seqlogo
 ```
-
-
+Note: If you do not have root access, you can run the command above with additional options to install locally:
+```
+pip install --user numpy pandas pyfaidx scipy seqlogo
+```
 
 <a name="install"></a>
 ## Installation
@@ -41,46 +43,54 @@ spyglass [other options] ref.fa peaks.bed motifs.pwm
 ```
 To run `spyglass` on our mini test files (see `example_files`):
 ```
-spyglass test_ref.fa test_peaks.bed test_motifs.pwm
+spyglass example_files/test_ref.fa example_files/test_peaks.bed example_files/test_motifs.pwm
 ```
 This should produce the output below:
 ```
 INSERT OUTPUT
 ```
-To compare to output of Homer `findMotifsGenome.pl`, run:
+To compare to output of [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) `findMotifsGenome.pl`, run:
 ```
-findMotifsGenome.pl test_peaks.bed test_ref.fa ~/example_files/peakAnalysis
+findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homerPeakAnalysis
 ```
 <a name="options"></a>
 ## spyglass Options
-`spyglass` has the following required arguments:
-- `ref.fa`: reference genome in Fasta format
-- `peaks.bed`: genomic regions file, for example, peak calls from ChIP-seq datasets.
--  `motifs.pwm`: PWMs of all motifs-of-interest. `spyglass` will determine whether these motifs are significantly enriched in `regions.bed`
+`spyglass` has the following required arguments (please see [File Formats](#formats) for file specifications):
+- `ref.fa`: faidx indexed reference sequence in Fasta format
+- `peaks.bed`: BED file of genomic peak regions (this will commonly be peak calls from ChIP-seq datasets)
+- `motifs.pwm`: PWM file of motif PWMs of interest. `spyglass` will determine whether these motifs are significantly enriched in `peaks.bed`
 
 Additionally, users may choose to specify the optional options below:
- - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. By default, background sequences will be chosen randomly from the reference genome.
- - `-o FILE`, `--output FILE`: Write output to this file. By default, output is written to stdout.
- - `-l LOGFILE`, `--logfile LOGFILE`: Write input file paths used and runtime to this file. 
- - `-p PVAL`, `--pval PVAL`: P-value threshold to be compared with Fisher exact test p-value for significant enrichment. 
- - `-r REVERSE`, `--reverse REVERSE`: Consider reverse complement in enrichment analysis. 
- - `-s SEQLOGO`, `--seqlogo SEQLOGO`: Generate motif logo of enriched motifs. 
- - `--version VERSION`: Print the version and quit. 
+ - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. Default: background sequences are randomly chosen from the reference genome
+ - `-o FILE`, `--output FILE`: write output to this file. Default: stdout
+ - `-l LOGFILE`, `--log LOGFILE`: write log to file. Default: stderr
+ - `-p PVAL`, `--pval PVAL`: p-value threshold for significant enrichment. Default: 0.0000001 
+ - `-r REVERSE`, `--reverse REVERSE`: consider reverse complement in enrichment analysis. Default: True
+ - `-s SEQLOGO`, `--seqlogo SEQLOGO`: generate motif logo of enriched motifs. Default: True
+ - `--version VERSION`: print the version and quit. 
 
 <a name="formats"></a>
 ## File Formats
-`peaks.bed` is a tab-delimited file in BED format with no header. It contains six columns as follows:
-```
-chromosome start_coordinate  end_coordinate peak_ID . strand(+/-)
-```
+### Input Files
 `ref.fa` is a reference genome sequence in FASTA format. It contains the name of the chromosome followed by the sequence:
 ```
 >chr[name]
 [chromosome sequence]
 ```
+`peaks.bed` is a tab-delimited file in BED format with no header. It contains 6 columns as follows:
+```
+chromosome    start_coordinate    end_coordinate    peak_ID    .    strand(+/-)
+```
+`motifs.pwm` contains the PWMs of motifs-of-interest. It contains the name of motif followed by a 4 tab-delimited columns of weights (using alphabetical order of
+nucleotides, ACGT), one row per motif position:
+```
+>[motif name]
+weight_A    weight_C    weight_G    weight_T
+```
+### Output Files
 `spyglass_results.txt`, the final output file, contains the following tab-delimited columns:
 ```
-motif_name	number_foreground_peaks_with_motif   number_background_peaks_with_motif   p-value   enriched(yes/no)
+motif_name    number_foreground_peaks_with_motif    number_background_peaks_with_motif    p-value    enriched(yes/no)
 ```
 The list of motifs will be sorted so that enriched motifs are listed first and by p-value significance (smallest to largest). 
 
