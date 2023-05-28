@@ -6,17 +6,20 @@ Command-line script to identify enriched motifs in genomic regions
 Similar to Homer findMotifsGenome.pl and Meme Suite SEA
 """
 
-import argparse
 from . import myutils as myutils
 from spyglass import __version__
-import os
-import pyfaidx
-import sys
+import argparse
 import datetime
 import numpy as np
+import os
+import pandas as pd
+import pyfaidx
 import seqlogo
+import sys
 
 def main():
+
+    # -------------------- Parse Command Line --------------------
 
     # create parser object
     parser = argparse.ArgumentParser(
@@ -24,16 +27,14 @@ def main():
         description = "Command-line script to identify enriched motifs in genomic regions"
     )
 
-    # required input
-    parser.add_argument("reference", help = "faidx indexed reference sequence file", type = str)
+    # positional (required) arguments
+    parser.add_argument("reference", help = "faidx indexed reference sequence file in Fasta format", type = str)
     parser.add_argument("peaks", help = "BED file of genomic peak regions", type = str)
     parser.add_argument("motifs", help = "PWM file of motif PWMs of interest", type = str)
 
-    # output
+    # optional arguments
     parser.add_argument("-o", "--output", help = "write output to file. Default: stdout", metavar = "FILE", type = str, required = False)
     parser.add_argument("-l", "--log", help = "write log to file. Default: stderr", metavar = "FILE", type = str, required = False)
-
-    # optional options
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
     parser.add_argument("-p", "--pval", help = "p-value threshold for significant enrichment. Default: 0.0000001", type = float, metavar = "PVALUE", required = False)
     parser.add_argument("-r", "--reverse", help = "consider reverse complement in enrichment analysis. Default: True", type = bool, metavar = "REVERSE", required = False)
@@ -42,6 +43,9 @@ def main():
 
     # parse arguments
     args = parser.parse_args()
+
+
+    # -------------------- Set-Up Log and Outfile --------------------
 
     # set up output file
     if args.output is None:
@@ -54,13 +58,16 @@ def main():
         log = sys.stderr
     else:
         log = open(args.log, "w")
+
     log.write("Welcome to spyglass!\n")
     log.write("Start time: ")
     log.write(str(datetime.datetime.now()))
     log.write("\n\n")
 
 
-    # -------------------- Load/Process --------------------
+    # -------------------- Load/Process Input Files --------------------
+
+    log.write("Loading input files:\n")
 
     # load fasta file
     if args.reference is not None:
@@ -85,38 +92,17 @@ def main():
                 if len(currPWM) != 0:
                     PWMList.append(np.array(currPWM).transpose())
                 currPWM = []
-                pwm_names.append(line.strip().split(">")[0])
+                pwm_names.append(line.strip().split(">")[1])
             else:
                 weights = line.strip().split("\t")
-                currPWM.append(weights)
+                weights_floats = [float(i) for i in weights]
+                currPWM.append(weights_floats)
+        PWMList.append(np.array(currPWM).transpose())
         m.close()
         log.write("Using motifs: {motifs}".format(motifs = args.motifs))
         log.write("\n")
     else:
         myutils.ERROR("please specify a motifs pwm file")
-
-    pfm_1 = np.array([
-    [35.0,92.0,146.0,226.0],
-    [28.0,281.0,71.0,119.0],
-    [25.0,272.0,8.0,194.0],
-    [219.0,6.0,4.0,270.0],
-    [1.0,11.0,5.0,482.0],
-    [7.0,1.0,2.0,489.0],
-    [39.0,76.0,372.0,12.0],
-    [52.0,1.0,12.0,434.0],
-    [113.0,124.0,78.0,184.0],
-    [340.0,39.0,33.0,87.0],
-    [36.0,5.0,19.0,439.0],
-    [19.0,29.0,375.0,76.0],
-    [24.0,317.0,59.0,99.0],
-    [279.0,51.0,17.0,152.0],
-    [277.0,47.0,72.0,103.0],
-    [386.0,19.0,38.0,56.0]
-    ]).transpose()
-    for pfm in [pfm_1]:
-        seq_pfm = seqlogo.Pfm(pfm/np.sum(pfm, 0)[0]) # normalize to probabilities rather than counts
-        seq_ppm = seqlogo.Ppm(seqlogo.pfm2ppm(seq_pfm))
-        PWMList.append(np.array(seqlogo.ppm2pwm(seq_ppm)).transpose())
 
     # load foreground bed file
     if args.peaks is not None:
@@ -124,7 +110,7 @@ def main():
             myutils.ERROR("{peaks} does not exist".format(peaks = args.peaks))
         peak_seqs, numPeaks, seqLen = myutils.LoadSeqs(reffasta, args.peaks)
         log.write("Using peaks: {peaks}".format(peaks = args.peaks))
-        log.write("\n")
+        log.write("\n\n")
     else:
         myutils.ERROR("please specify a foreground peaks bed file")
     
@@ -136,12 +122,13 @@ def main():
         log.write("Using custom background: {background}".format(background = args.background))
         log.write("\n\n")
     else:
+        log.write("Generating random background from reference sequence...")
         bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen)
-        log.write("Generating random background")
-        log.write("\n\n")
+        log.write("Done\n\n")
 
 
-    # -------------------- Motif Enrichment --------------------
+    # -------------------- Perform Motif Enrichment --------------------
+
     reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
     
     # initialize vars for null dist sim
@@ -149,30 +136,58 @@ def main():
     numsim = 10000
     null_pval = 0.01
     enriched_pval = args.pval if args.pval is not None else 0.0000001
+    enrichment_results = []
 
+    log.write("Starting motif enrichment analysis...\n\n")
+    
     for i in range(len(PWMList)):
-        log.write("Motif ")
-        log.write(str(i))
-        log.write(":")
+        log.write("Motif " + pwm_names[i] + ":\n")
+        
         # generate null dist of random seqs
         null_scores = [myutils.ScoreSeq(PWMList[i], myutils.RandomSequence(PWMList[i].shape[1], freqs)) for j in range(numsim)]
+        
         # compute score significance threshold
-        log.write("Starting thresholding... ")
+        log.write("Starting thresholding...")
         thresh = myutils.GetThreshold(null_scores, null_pval)
+        log.write("Done\n")
+        
         # get number of matches above threshold
-        log.write("finding matches... ")
+        log.write("Finding motif matches in foreground and background...")
         num_peak_pass = np.sum([int(myutils.FindMaxScore(PWMList[i], seq) > thresh) for seq in peak_seqs])
         num_bg_pass = np.sum([int(myutils.FindMaxScore(PWMList[i], seq) > thresh) for seq in bg_seqs])
+        log.write("Done\n")
+        
         # perform fisher exact test
-        log.write("performing fisher's exact test...\n")
+        log.write("Performing fisher's exact test...")
         fisher_pval = myutils.ComputeEnrichment(len(peak_seqs), num_peak_pass, len(bg_seqs), num_bg_pass)
         enriched = "yes" if fisher_pval < enriched_pval else "no"
+        log.write("Done\n\n")
+        
         # output
-        outf.write("\t".join([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), str(fisher_pval), enriched]))
-        outf.write("\n")
+        enrichment_results.append([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), str(fisher_pval), enriched])
+
+
+    # -------------------- Summarize Results --------------------
+
+    log.write("Summarizing results...")
+
+    if outf == sys.stdout:
+        log.write("please see below\n\n")
+    else:
+        log.write("please see: " + args.output + "\n")
+
+    results = pd.DataFrame(enrichment_results)
+    results.columns = ["# motif_name", "motif_occurences_foreground", "motif_occurences_background", "pvalue", "enriched?"]
+    results.sort_values(by = ["pvalue", "# motif_name"], ascending = False).reset_index(drop = True)
+    results.to_csv(outf, sep = "\t", header = True, index = False)
+
+    log.write("\nCongrats! spyglass was successfully executed! Cheers!\n")
     log.write("End time: ")
     log.write(str(datetime.datetime.now()))
     log.write("\n")
+
+
+    # -------------------- Close Log and Outfiles and Exit --------------------
 
     log.close()
     outf.close()

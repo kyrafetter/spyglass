@@ -4,7 +4,6 @@ Utilities for spyglass
 import math
 import numpy as np
 import os
-import pandas
 import pyfaidx
 import random
 import scipy.stats
@@ -25,6 +24,7 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 # -------------------- Error Handling --------------------
 def ERROR(msg):
 	"""
@@ -37,6 +37,7 @@ def ERROR(msg):
 	"""
 	sys.stderr.write(bcolors.FAIL + "[ERROR]: " + bcolors.ENDC + "{msg}\n".format(msg=msg) )
 	sys.exit(1)
+
 
 # -------------------- Load sequences --------------------
 def RetrieveFastaSeq(fasta, chromosome, start, end):
@@ -107,7 +108,6 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 	return seqs
 
 	
-
 # -------------------- Score sequences --------------------
 def ScoreSeq(pwm, seq):
 	"""
@@ -176,6 +176,7 @@ def FindMaxScore(pwm, seq):
 		max_score = max(max_score, ScoreSeq(pwm,seq[i:i+n]), ScoreSeq(pwm,rev[i:i+n]))
 	return max_score
 
+
 # -------------------- Set the threshold --------------------
 
 def ComputeNucFreqs(sequences):
@@ -225,7 +226,6 @@ def RandomSequence(n, freqs):
 		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)
 	return seq
 
-	
 def GetThreshold(null_dist, pval):
 	"""
 	Score threshold for pvalue
