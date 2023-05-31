@@ -1,7 +1,4 @@
 # spyglass
-`spyglass` is a PWM (position weight matrix)-based implementation of a DNA binding motif finder. It is a tool that identifies enriched motifs in 1-D genomic regions given a list of known motifs. 
-
-Alternate description:
 `spyglass` is a Python package that detects the enrichment of known DNA-binding motifs in genomic regions. This PWM (position weight matrix)-based implementation performs a subset of the `findMotifsGenome.pl` command available through Homer (see the [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) page for more details). 
 
 [Prerequisites](#prerequisites) | [Installation](#install) | [Basic Usage](#usage) | [spyglass Options](#options) | [File formats](#formats) | [Testing](#testing)
@@ -36,7 +33,7 @@ Note: if you do not have root access, you can run the command above with additio
 ```
 python setup.py install --user
 ```
-If the install was successful, type `spyglass --help` to show a useful message.
+If the install was successful, type `spyglass --help` to show a useful message. If the spyglass command was not found, you may have to include the script installation path before calling spyglass. You can also set the path for the program in the PATH variable using `export PATH=$PATH:/home/user/.local/bin`
 
 <a name="usage"></a>
 ## Basic Usage 
