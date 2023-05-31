@@ -28,8 +28,8 @@ def main():
     )
 
     # positional (required) arguments
-    parser.add_argument("reference", help = "faidx indexed reference sequence file in Fasta format", type = str)
     parser.add_argument("peaks", help = "BED file of genomic peak regions", type = str)
+    parser.add_argument("reference", help = "faidx indexed reference sequence file in Fasta format", type = str)
     parser.add_argument("motifs", help = "PWM file of motif PWMs of interest", type = str)
 
     # optional arguments
