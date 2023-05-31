@@ -33,22 +33,42 @@ Note: if you do not have root access, you can run the command above with additio
 ```
 python setup.py install --user
 ```
-If the install was successful, type `spyglass --help` to show a useful message. If the spyglass command was not found, you may have to include the script installation path before calling spyglass. You can also set the path for the program in the PATH variable using `export PATH=$PATH:/home/user/.local/bin`
+If the install was successful, type `spyglass --help` to show a useful message. 
+
+Note: If the spyglass command was not found, you may have to include the script installation path in your `$PATH` before calling spyglass. You can do so using `export PATH=$PATH:/home/user/.local/bin`
 
 <a name="usage"></a>
 ## Basic Usage 
 The basic usage of `spyglass` is:
 ```
-spyglass [other options] ref.fa peaks.bed motifs.pwm
+spyglass [other options] peaks.bed ref.fa motifs.pwm
 ```
+### Testing `spyglass`: Mini Files
 To run `spyglass` on our mini test files (see `example_files`):
+#### Using User-Provided Background
 ```
-spyglass example_files/test_ref.fa example_files/test_peaks.bed example_files/test_motifs.pwm
+spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/test_motifs.pwm -b example_files/test_background.bed
 ```
 This should produce the output below:
 ```
-INSERT OUTPUT
+# motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
+TGIF1_HUMAN.H11MO.0.A   4/6     2/6     0.5670995670995673      no
+FOS_HUMAN.H11MO.0.A     0/6     0/6     1.0     no
+GATA2_HUMAN.H11MO.0.A   0/6     0/6     1.0     no
 ```
+#### Using Random Background 
+Note: the number of motif occurences in background sequences, p-values, and enrichment status may not exactly match our sample output below as the background is randomly generated
+```
+spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/test_motifs.pwm
+```
+This should produce a similar output to the one below:
+```
+# motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
+TGIF1_HUMAN.H11MO.0.A   4/6     2/6     0.5670995670995673      no
+FOS_HUMAN.H11MO.0.A     0/6     0/6     1.0     no
+GATA2_HUMAN.H11MO.0.A   0/6     0/6     1.0     no
+```
+### Testing Homer: Mini Files
 To compare to output of [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) `findMotifsGenome.pl`, run:
 ```
 findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homerPeakAnalysis
@@ -56,8 +76,8 @@ findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homer
 <a name="options"></a>
 ## spyglass Options
 `spyglass` has the following required arguments (please see [File Formats](#formats) for file specifications):
-- `ref.fa`: faidx indexed reference sequence in Fasta format
 - `peaks.bed`: BED file of genomic peak regions (this will commonly be peak calls from ChIP-seq datasets)
+- `ref.fa`: faidx indexed reference sequence in Fasta format
 - `motifs.pwm`: PWM file of motif PWMs of interest. `spyglass` will determine whether these motifs are significantly enriched in `peaks.bed`
 
 Additionally, users may choose to specify the optional options below:
@@ -72,14 +92,14 @@ Additionally, users may choose to specify the optional options below:
 <a name="formats"></a>
 ## File Formats
 ### Input Files
+`peaks.bed` is a tab-delimited file in BED format with no header. It contains 6 columns as follows:
+```
+chromosome    start_coordinate    end_coordinate    peak_ID    .    strand(+/-)
+```
 `ref.fa` is a reference genome sequence in FASTA format. It contains the name of the chromosome followed by the sequence:
 ```
 >chr[name]
 [chromosome sequence]
-```
-`peaks.bed` is a tab-delimited file in BED format with no header. It contains 6 columns as follows:
-```
-chromosome    start_coordinate    end_coordinate    peak_ID    .    strand(+/-)
 ```
 `motifs.pwm` contains the PWMs of motifs-of-interest. It contains the name of motif followed by a 4 tab-delimited columns of weights (using alphabetical order of
 nucleotides, ACGT), one row per motif position:
