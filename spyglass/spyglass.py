@@ -73,7 +73,10 @@ def main():
     if args.reference is not None:
         if not os.path.exists(args.reference):
             myutils.ERROR("{fasta} does not exist".format(fasta = args.reference))
-        reffasta = pyfaidx.Fasta(args.reference)
+        try:
+            reffasta = pyfaidx.Fasta(args.reference)
+        except Exception:
+            myutils.ERROR("please check fasta file format - see README.md for details")
         log.write("Using fasta: {fasta}".format(fasta = args.reference))
         log.write("\n")
     else:
@@ -83,6 +86,7 @@ def main():
     PWMList = []
     pwm_names = []
     if args.motifs is not None:
+        # add pretty error later
         if not os.path.exists(args.motifs):
             myutils.ERROR("{motifs} does not exist".format(motifs = args.motifs))
         m = open(args.motifs, "r")
