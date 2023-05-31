@@ -35,7 +35,7 @@ python setup.py install --user
 ```
 If the install was successful, type `spyglass --help` to show a useful message. 
 
-Note: If the spyglass command was not found, you may have to include the script installation path in your `$PATH` before calling spyglass. You can do so using `export PATH=$PATH:/home/user/.local/bin`
+Note: If the spyglass command was not found, you may have to include the script installation path in your `$PATH` before calling spyglass. Or you can use `export PATH=$PATH:/home/<user>/.local/bin/spyglass` to call `spyglass` without having to specify the exact path each time. 
 
 <a name="usage"></a>
 ## Basic Usage 
