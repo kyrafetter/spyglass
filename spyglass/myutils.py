@@ -100,7 +100,11 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 
 	seqs = []
 	chrs = fasta.keys()
+	printcounter = 0
 	for i in range(0, numSeqs):
+		printcounter += 1
+		if printcounter % 100 == 0:
+			print("Generating background seq " + str(printcounter) + "/" + str(numSeqs))           
 		# get a random chromosome
 		chrom = np.random.choice(list(chrs), 1)
 		# get a random start position on chosen chromosome
@@ -150,6 +154,7 @@ def ReverseComplement(seq):
 	revcomp = ""
 	revdict = {"A": "T", "C": "G", "G": "C", "T": "A"}
 	# For each letter in seq, prepend its complement base to revcomp
+	print(seq)
 	for c in seq:
 		revcomp = revdict.get(c) + revcomp
 	return revcomp

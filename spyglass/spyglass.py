@@ -126,7 +126,8 @@ def main():
         log.write("Using custom background: {background}".format(background = args.background))
         log.write("\n\n")
     else:
-        log.write("Generating random background from reference sequence...")
+        # 06.02 Fri - only writes after bg_seqs computed, try pass log into function 
+        # log.write("Generating random background from reference sequence...")
         bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen)
         log.write("Done\n\n")
 
