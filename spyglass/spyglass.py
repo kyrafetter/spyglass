@@ -127,17 +127,21 @@ def main():
         log.write("\n\n")
     else:
         # 06.02 Fri - only writes after bg_seqs computed, try pass log into function 
-        # log.write("Generating random background from reference sequence...")
-        bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen)
+        log.write("Generating random background from reference sequence...")
+        bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen, log)
         log.write("Done\n\n")
 
 
     # -------------------- Perform Motif Enrichment --------------------
 
-    reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
+    if args.reverse:
+        reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
     
     # initialize vars for null dist sim
-    freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
+    if args.reverse:
+        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
+    else:
+        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs)
     numsim = 10000
     null_pval = 0.01
     enriched_pval = args.pval if args.pval is not None else 0.0000001

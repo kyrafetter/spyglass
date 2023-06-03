@@ -88,7 +88,7 @@ def LoadSeqs(fasta, peakBed):
 			seqLen = int(info[2]) - int(info[1]) + 1
 	return seqs, numPeaks, seqLen
 
-def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
+def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen, log):
 	"""
 	Return a list of randomly generated background peak sequences from given reference genome
 
@@ -103,18 +103,19 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen):
 	"""
 
 	seqs = []
-	chrs = fasta.keys()
+	chrs = list(fasta.keys())
 	printcounter = 0
 	for i in range(0, numSeqs):
 		printcounter += 1
 		if printcounter % 100 == 0:
-			print("Generating background seq " + str(printcounter) + "/" + str(numSeqs))           
+			log.write("Generating background seq " + str(printcounter) + "/" + str(numSeqs))        
 		# get a random chromosome
-		chrom = np.random.choice(list(chrs), 1)
+		chrom = np.random.choice(chrs, 1)
 		# get a random start position on chosen chromosome
 		start = random.randrange(0, len(fasta[chrom[0]][0:].seq) - seqLen)
 		# append sequence on chrom beginning at start of lenth seqLen
-		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen))
+		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen))         
+	print(seqs)
 	return seqs
 
 	
