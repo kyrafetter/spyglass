@@ -190,13 +190,22 @@ def main():
     results.sort_values(by = ["pvalue", "# motif_name"], ascending = False).reset_index(drop = True)
     results.to_csv(outf, sep = "\t", header = True, index = False)
 
+
+    # -------------------- Generate SeqLogo --------------------
+
+    if args.seqlogo:
+        log.write("\nGenerating seqlogo...")
+        for pwm in PWMList:
+            seqlogo.seqlogo(seqlogo.pwm2ppm(pwm), ic_scale = True, format = 'png', size = 'medium')
+        log.write("Done\n")
+
+
+    # -------------------- Close Log and Outfiles and Exit --------------------
+
     log.write("\nCongrats! spyglass was successfully executed! Cheers!\n")
     log.write("End time: ")
     log.write(str(datetime.datetime.now()))
     log.write("\n")
-
-
-    # -------------------- Close Log and Outfiles and Exit --------------------
 
     log.close()
     outf.close()
