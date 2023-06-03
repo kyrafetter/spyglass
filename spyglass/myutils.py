@@ -79,7 +79,11 @@ def LoadSeqs(fasta, peakBed):
 			if len(info) != 6:
 				ERROR("please check peak file format - see README.md for details")
 			# append sequence on given chromosome beginning/ending at start/end
-			seqs.append(RetrieveFastaSeq(fasta, info[0], int(info[1]), int(info[2])))
+			seqToAdd = RetrieveFastaSeq(fasta, info[0], int(info[1]), int(info[2]))
+			# convert to uppercase, if not already uppercase
+			if seqToAdd.islower():
+				seqToAdd = seqToAdd.upper()
+			seqs.append(seqToAdd)
 			numPeaks = numPeaks + 1
 			seqLen = int(info[2]) - int(info[1]) + 1
 	return seqs, numPeaks, seqLen
