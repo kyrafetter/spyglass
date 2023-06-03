@@ -33,8 +33,8 @@ def main():
     parser.add_argument("motifs", help = "PWM file of motif PWMs of interest", type = str)
 
     # optional arguments
-    parser.add_argument("-o", "--output", help = "write output to file. Default: stdout", metavar = "FILE", type = str, required = False)
-    parser.add_argument("-l", "--log", help = "write log to file. Default: stderr", metavar = "FILE", type = str, required = False)
+    parser.add_argument("-o", "--output", help = "write output to directory. Default: working directory", metavar = "DIRECTORY", type = str, required = False)
+    parser.add_argument("-l", "--log", help = "write log to file. Default: stdout", metavar = "FILE", type = str, required = False)
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
     parser.add_argument("-p", "--pval", help = "p-value threshold for significant enrichment. Default: 0.0000001", type = float, metavar = "PVALUE", required = False)
     parser.add_argument("-r", "--reverse", help = "consider reverse complement in enrichment analysis. Default: True", type = bool, metavar = "REVERSE", required = False)
@@ -49,9 +49,13 @@ def main():
 
     # set up output file
     if args.output is None:
-        outf = sys.stdout
+        outdir = os.getcwd()
     else:
-        outf = open(args.output, "w")
+        outdir = args.output
+    
+    if outdir[-1] != "/":
+        outdir = outdir + "/"
+    outf = open(outdir + "spyglass_results.tsv", "w")
     
     # set up log file
     if args.log is None:
@@ -196,7 +200,8 @@ def main():
     if args.seqlogo:
         log.write("\nGenerating seqlogo...")
         for pwm in PWMList:
-            seqlogo.seqlogo(seqlogo.pwm2ppm(pwm), ic_scale = True, format = 'png', size = 'medium')
+            logo = seqlogo.seqlogo(seqlogo.pwm2ppm(pwm), ic_scale = True, format = 'png', size = 'medium')
+            logo.save(outdir + pwm + "_logo.png")
         log.write("Done\n")
 
 
