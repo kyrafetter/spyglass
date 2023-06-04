@@ -52,9 +52,9 @@ spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/te
 This should produce the output below:
 ```
 # motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
-TGIF1_HUMAN.H11MO.0.A   4/6     2/6     0.5670995670995673      no
-FOS_HUMAN.H11MO.0.A     0/6     0/6     1.0     no
-GATA2_HUMAN.H11MO.0.A   0/6     0/6     1.0     no
+E2F5_HUMAN.H11MO.0.B    9/10    1/10    0.0010933339106713718   no
+FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
+GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
 ```
 #### Using Random Background 
 Note: the number of motif occurences in background sequences, p-values, and enrichment status may not exactly match our sample output below as the background is randomly generated
@@ -64,14 +64,14 @@ spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/te
 This should produce a similar output to the one below:
 ```
 # motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
-TGIF1_HUMAN.H11MO.0.A   4/6     2/6     0.5670995670995673      no
-FOS_HUMAN.H11MO.0.A     0/6     0/6     1.0     no
-GATA2_HUMAN.H11MO.0.A   0/6     0/6     1.0     no
+E2F5_HUMAN.H11MO.0.B    9/10    2/10    0.005477494641581315    no
+FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
+GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
 ```
 ### Testing Homer: Mini Files
 To compare to output of [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) `findMotifsGenome.pl`, run:
 ```
-findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homerPeakAnalysis
+findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homer_results -mask -size given -mknown example_files/test_homer_motifs.motifs -nomotif
 ```
 <a name="options"></a>
 ## spyglass Options
@@ -81,11 +81,12 @@ findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homer
 - `motifs.pwm`: PWM file of motif PWMs of interest. `spyglass` will determine whether these motifs are significantly enriched in `peaks.bed`
 
 Additionally, users may choose to specify the optional options below:
+ - `-h`, `--help`: show help message and exit
+ -  `-o DIRECTORY`, `--output DIRECTORY`: write output to directory. Default: working directory
+ - `-l FILE`, `--log FILE`: write log to file. Default: stdout
  - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. Default: background sequences are randomly chosen from the reference genome
- - `-o FILE`, `--output FILE`: write output to this file. Default: stdout
- - `-l LOGFILE`, `--log LOGFILE`: write log to file. Default: stderr
  - `-p PVAL`, `--pval PVAL`: p-value threshold for significant enrichment. Default: 0.0000001 
- - `-r REVERSE`, `--reverse REVERSE`: consider reverse complement in enrichment analysis. Default: True
+ - `-r`, `--not-reverse`: do not consider reverse complement in enrichment analysis. Default: False
  - `-s SEQLOGO`, `--seqlogo SEQLOGO`: generate motif logo of enriched motifs. Default: True
  - `--version VERSION`: print the version and quit. 
 
