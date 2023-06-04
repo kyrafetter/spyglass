@@ -33,12 +33,12 @@ def main():
     parser.add_argument("motifs", help = "PWM file of motif PWMs of interest", type = str)
 
     # optional arguments
-    parser.add_argument("-o", "--output", help = "write output to file. Default: stdout", metavar = "FILE", type = str, required = False)
-    parser.add_argument("-l", "--log", help = "write log to file. Default: stderr", metavar = "FILE", type = str, required = False)
+    parser.add_argument("-o", "--output", help = "write output to directory. Default: working directory", metavar = "DIRECTORY", type = str, required = False)
+    parser.add_argument("-l", "--log", help = "write log to file. Default: stdout", metavar = "FILE", type = str, required = False)
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
     parser.add_argument("-p", "--pval", help = "p-value threshold for significant enrichment. Default: 0.0000001", type = float, metavar = "PVALUE", required = False)
-    parser.add_argument("-r", "--reverse", help = "consider reverse complement in enrichment analysis. Default: True", type = bool, metavar = "REVERSE", required = False)
-    parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: True", type = bool, metavar = "SEQLOGO", required = False)
+    parser.add_argument("-r", "--not-reverse", help = "do not consider reverse complement in enrichment analysis. Default: FALSE", type = bool, metavar = "REVERSE", required = False)
+    parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: FALSE", type = bool, metavar = "SEQLOGO", required = False)
     parser.add_argument("--version", help = "print the version and quit", action = "version", version = '{version}'.format(version = __version__))
 
     # parse arguments
@@ -49,9 +49,13 @@ def main():
 
     # set up output file
     if args.output is None:
-        outf = sys.stdout
+        outdir = os.getcwd()
     else:
-        outf = open(args.output, "w")
+        outdir = args.output
+    
+    if outdir[-1] != "/":
+        outdir = outdir + "/"
+    outf = open(outdir + "spyglass_results.tsv", "w")
     
     # set up log file
     if args.log is None:
@@ -127,17 +131,21 @@ def main():
         log.write("\n\n")
     else:
         # 06.02 Fri - only writes after bg_seqs computed, try pass log into function 
-        # log.write("Generating random background from reference sequence...")
-        bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen)
+        log.write("Generating random background from reference sequence...")
+        bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen, log)
         log.write("Done\n\n")
-
+    
 
     # -------------------- Perform Motif Enrichment --------------------
 
-    reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
+    if args.not_reverse is None:
+        reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
     
     # initialize vars for null dist sim
-    freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
+    if args.not_reverse is None:
+        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
+    else:
+        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs)
     numsim = 10000
     null_pval = 0.01
     enriched_pval = args.pval if args.pval is not None else 0.0000001
@@ -186,13 +194,23 @@ def main():
     results.sort_values(by = ["pvalue", "# motif_name"], ascending = False).reset_index(drop = True)
     results.to_csv(outf, sep = "\t", header = True, index = False)
 
+
+    # -------------------- Generate SeqLogo --------------------
+
+    if args.seqlogo is None:
+        log.write("\nGenerating seqlogo...")
+        for pwm in PWMList:
+            logo = seqlogo.seqlogo(seqlogo.pwm2ppm(pwm), ic_scale = True, format = 'png', size = 'medium')
+            logo.save(outdir + pwm + "_logo.png")
+        log.write("Done\n")
+
+
+    # -------------------- Close Log and Outfiles and Exit --------------------
+
     log.write("\nCongrats! spyglass was successfully executed! Cheers!\n")
     log.write("End time: ")
     log.write(str(datetime.datetime.now()))
     log.write("\n")
-
-
-    # -------------------- Close Log and Outfiles and Exit --------------------
 
     log.close()
     outf.close()
