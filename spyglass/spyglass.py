@@ -59,7 +59,7 @@ def main():
     
     # set up log file
     if args.log is None:
-        log = sys.stderr
+        log = sys.stdout
     else:
         log = open(args.log, "w")
 
@@ -131,7 +131,7 @@ def main():
         log.write("\n\n")
     else:
         # 06.02 Fri - only writes after bg_seqs computed, try pass log into function 
-        log.write("Generating random background from reference sequence...")
+        log.write("Generating random background from reference sequence...\n")
         bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen, log)
         log.write("Done\n\n")
     
@@ -187,7 +187,7 @@ def main():
     if outf == sys.stdout:
         log.write("please see below\n\n")
     else:
-        log.write("please see: " + args.output + "\n")
+        log.write("please see: " + outdir + "\n")
 
     results = pd.DataFrame(enrichment_results)
     results.columns = ["# motif_name", "motif_occurences_foreground", "motif_occurences_background", "pvalue", "enriched?"]
@@ -196,12 +196,18 @@ def main():
 
 
     # -------------------- Generate SeqLogo --------------------
-
-    if args.seqlogo is None:
+    
+    # 6.03 - work in progress; does not run at this time
+    #if args.seqlogo is None:
+    if False:
         log.write("\nGenerating seqlogo...")
+        i = 0
         for pwm in PWMList:
-            logo = seqlogo.seqlogo(seqlogo.pwm2ppm(pwm), ic_scale = True, format = 'png', size = 'medium')
-            logo.save(outdir + pwm + "_logo.png")
+            print(pwm)
+            print(seqlogo.Pwm(pwm.transpose()))
+            #logo = seqlogo.seqlogo(seqlogo.pwm2ppm(seqlogo.Pwm(pwm)), ic_scale = True, format = 'png', size = 'medium')
+            #logo.save(outdir + pwm_names[i] + "_logo.png")
+            i = i + 1
         log.write("Done\n")
 
 

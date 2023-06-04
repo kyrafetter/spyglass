@@ -57,7 +57,7 @@ def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 
 	# return sequence on given chromosome from start coordinate to end coordinate
-	return fasta[chromosome][(start - 1):end].seq	
+	return fasta[chromosome][(start - 1):end].seq
 	
 def LoadSeqs(fasta, peakBed):
 	"""
@@ -107,15 +107,18 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen, log):
 	printcounter = 0
 	for i in range(0, numSeqs):
 		printcounter += 1
-		if printcounter % 100 == 0:
-			log.write("Generating background seq " + str(printcounter) + "/" + str(numSeqs))        
+		if numSeqs > 1000:
+			n = 100
+		else:
+			n = 10
+		if printcounter % int(numSeqs / n) == 0:
+			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")        
 		# get a random chromosome
 		chrom = np.random.choice(chrs, 1)
 		# get a random start position on chosen chromosome
 		start = random.randrange(0, len(fasta[chrom[0]][0:].seq) - seqLen)
 		# append sequence on chrom beginning at start of lenth seqLen
-		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen))         
-	print(seqs)
+		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen - 1))
 	return seqs
 
 	
@@ -159,7 +162,7 @@ def ReverseComplement(seq):
 	revcomp = ""
 	revdict = {"A": "T", "C": "G", "G": "C", "T": "A"}
 	# For each letter in seq, prepend its complement base to revcomp
-	print(seq)
+	#print(seq)
 	for c in seq:
 		revcomp = revdict.get(c) + revcomp
 	return revcomp
