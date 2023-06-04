@@ -107,11 +107,7 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen, log):
 	printcounter = 0
 	for i in range(0, numSeqs):
 		printcounter += 1
-		if numSeqs > 1000:
-			n = 100
-		else:
-			n = 10
-		if printcounter % int(numSeqs / n) == 0:
+		if printcounter % int(numSeqs / 10) == 0:
 			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")        
 		# get a random chromosome
 		chrom = np.random.choice(chrs, 1)
