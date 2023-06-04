@@ -71,7 +71,7 @@ GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
 ### Testing Homer: Mini Files
 To compare to output of [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) `findMotifsGenome.pl`, run:
 ```
-findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homer_results -mask -size given -mknown example_files/test_homer_motifs.motifs -nomotif
+findMotifsGenome.pl example_files/test_peaks.bed example_files/test_ref.fa homer_results -mask -size given -mknown example_files/test_homer.motifs -nomotif
 ```
 <a name="options"></a>
 ## spyglass Options
