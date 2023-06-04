@@ -81,7 +81,7 @@ def LoadSeqs(fasta, peakBed):
 			# append sequence on given chromosome beginning/ending at start/end
 			seqToAdd = RetrieveFastaSeq(fasta, info[0], int(info[1]), int(info[2]))
 			# convert to uppercase, if not already uppercase
-			if seqToAdd.islower():
+			if not seqToAdd.isupper():
 				seqToAdd = seqToAdd.upper()
 			seqs.append(seqToAdd)
 			numPeaks = numPeaks + 1
