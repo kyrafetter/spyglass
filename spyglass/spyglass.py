@@ -37,7 +37,7 @@ def main():
     parser.add_argument("-l", "--log", help = "write log to file. Default: stdout", metavar = "FILE", type = str, required = False)
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
     parser.add_argument("-p", "--pval", help = "p-value threshold for significant enrichment. Default: 0.0000001", type = float, metavar = "PVALUE", required = False)
-    parser.add_argument("-r", "--not-reverse", help = "consider reverse complement in enrichment analysis. Default: True", type = bool, metavar = "REVERSE", required = False)
+    parser.add_argument("-r", "--not-reverse", help = "do not consider reverse complement in enrichment analysis. Default: True", type = bool, metavar = "REVERSE", required = False)
     parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: True", type = bool, metavar = "SEQLOGO", required = False)
     parser.add_argument("--version", help = "print the version and quit", action = "version", version = '{version}'.format(version = __version__))
 
