@@ -57,7 +57,7 @@ def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 
 	# return sequence on given chromosome from start coordinate to end coordinate
-	return fasta[chromosome][(start - 1):end].seq
+	return (fasta[chromosome][(start - 1):end].seq).upper()
 	
 def LoadSeqs(fasta, peakBed):
 	"""
@@ -80,9 +80,6 @@ def LoadSeqs(fasta, peakBed):
 				ERROR("please check peak file format - see README.md for details")
 			# append sequence on given chromosome beginning/ending at start/end
 			seqToAdd = RetrieveFastaSeq(fasta, info[0], int(info[1]), int(info[2]))
-			# convert to uppercase, if not already uppercase
-			if not seqToAdd.isupper():
-				seqToAdd = seqToAdd.upper()
 			seqs.append(seqToAdd)
 			numPeaks = numPeaks + 1
 			seqLen = int(info[2]) - int(info[1]) + 1
@@ -108,13 +105,15 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen, log):
 	for i in range(0, numSeqs):
 		printcounter += 1
 		if printcounter % int(numSeqs / 10) == 0:
-			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")        
+# 			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")
+			log.write("=")
 		# get a random chromosome
 		chrom = np.random.choice(chrs, 1)
 		# get a random start position on chosen chromosome
 		start = random.randrange(0, len(fasta[chrom[0]][0:].seq) - seqLen)
 		# append sequence on chrom beginning at start of lenth seqLen
 		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen - 1))
+	log.write("\n\n")
 	return seqs
 
 	
@@ -232,6 +231,7 @@ def RandomSequence(n, freqs):
     seq : str
        random sequence
 	"""
+	freqs[3] = 1 - freqs[0] - freqs[1] - freqs[2]   
 	seq = ""
 	for i in range(n):
 		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)

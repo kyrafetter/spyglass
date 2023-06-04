@@ -132,8 +132,8 @@ def main():
         log.write("Using custom background: {background}".format(background = args.background))
         log.write("\n\n")
     else:
-        # 06.02 Fri - only writes after bg_seqs computed, try pass log into function 
-        log.write("Generating random background from reference sequence...\n")
+        log.write("Generating random background from reference genome...\n")
+        log.write("0   50   100 (% complete)\n")
         bg_seqs = myutils.GenerateRandomBkgSeqs(reffasta, numPeaks, seqLen, log)
         log.write("Done\n\n")
     
@@ -183,8 +183,11 @@ def main():
         
         # output
         enrichment_results.append([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), str(fisher_pval), enriched])
-
-
+#     #print foreground and bg peaks
+#     for i in range(len(bg_seqs)):
+#         print(str(i) + ": ")
+#         print("(fg) " + str(peak_seqs[i]))
+#         print("(bg) " + str(bg_seqs[i]))
     # -------------------- Summarize Results --------------------
 
     log.write("Summarizing results...")
