@@ -140,7 +140,7 @@ def main():
 
     # -------------------- Perform Motif Enrichment --------------------
     
-    log.write("Starting motif enrichment analysis...\n")
+    log.write("Starting motif enrichment analysis...\n\n")
 
     if args.not_reverse is None:
         reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]

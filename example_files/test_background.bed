@@ -1,6 +1,10 @@
-chrTEST	11	23	bg_peak_1	.	+
-chrTEST	20	32	bg_peak_2	.	+
-chrTEST	21	33	bg_peak_3	.	+
-chrTEST	30	42	bg_peak_4	.	+
-chrTEST	55	67	bg_peak_5	.	+
-chrTEST	88	100	bg_peak_6	.	+
+chrTEST	3	12	bg_peak_1	.	+
+chrTEST	13	22	bg_peak_2	.	+
+chrTEST	27	36	bg_peak_3	.	+
+chrTEST	40	49	bg_peak_4	.	+
+chrTEST	55	64	bg_peak_5	.	+
+chrTEST	69	78	bg_peak_6	.	+
+chrTEST	80	89	bg_peak_7	.	+
+chrTEST	99	108	bg_peak_8	.	+
+chrTEST	120	129	bg_peak_9	.	+
+chrTEST	135	144	bg_peak_10	.	+
