@@ -182,12 +182,8 @@ def main():
         log.write("Done\n\n")
         
         # output
-        enrichment_results.append([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), str(fisher_pval), enriched])
-#     #print foreground and bg peaks
-#     for i in range(len(bg_seqs)):
-#         print(str(i) + ": ")
-#         print("(fg) " + str(peak_seqs[i]))
-#         print("(bg) " + str(bg_seqs[i]))
+        enrichment_results.append([pwm_names[i], str(num_peak_pass) + "/" + str(len(peak_seqs)), str(num_bg_pass) + "/" + str(len(bg_seqs)), "{0:.{1}e}".format(fisher_pval, 3), enriched])
+
     # -------------------- Summarize Results --------------------
 
     log.write("Summarizing results...")

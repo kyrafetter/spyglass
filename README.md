@@ -52,9 +52,9 @@ spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/te
 This should produce the output below:
 ```
 # motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
-E2F5_HUMAN.H11MO.0.B    9/10    1/10    0.0010933339106713718   no
-FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
-GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
+E2F5_HUMAN.H11MO.0.B    9/10    1/10    1.093e-03   no
+FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.000e+00     no
+GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.000e+00     no
 ```
 #### Using Random Background 
 Note: the number of motif occurences in background sequences, p-values, and enrichment status may not exactly match our sample output below as the background is randomly generated
