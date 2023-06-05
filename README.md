@@ -64,9 +64,9 @@ spyglass example_files/test_peaks.bed example_files/test_ref.fa example_files/te
 This should produce a similar output to the one below:
 ```
 # motif_name    motif_occurences_foreground     motif_occurences_background     pvalue  enriched?
-E2F5_HUMAN.H11MO.0.B    9/10    2/10    0.005477494641581315    no
-FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
-GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.0     no
+E2F5_HUMAN.H11MO.0.B    9/10    2/10    1.977e-02    no
+FOXK1_HUMAN.H11MO.0.A   0/10    0/10    1.000e+00     no
+GATA2_HUMAN.H11MO.0.A   0/10    0/10    1.000e+00     no
 ```
 ### Testing Homer: Mini Files
 To compare to output of [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) `findMotifsGenome.pl`, run:
