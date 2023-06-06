@@ -4,6 +4,10 @@
 [Prerequisites](#prerequisites) | [Installation](#install) | [Basic Usage](#usage) | [spyglass Options](#options) | [File formats](#formats) | [Testing](#testing)
 
 <a name="prerequisites"></a>
+## Miro Board
+https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui
+
+<a name="prerequisites"></a>
 ## Prerequisites
 `spyglass` requires the following python libraries to be installed:
 - numpy
@@ -86,7 +90,7 @@ Additionally, users may choose to specify the optional options below:
  - `-l FILE`, `--log FILE`: write log to file. Default: stdout
  - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. Default: background sequences are randomly chosen from the reference genome
  - `-p PVAL`, `--pval PVAL`: p-value threshold for significant enrichment. Default: 0.0000001 
- - `-r`, `--not-reverse`: do not consider reverse complement in enrichment analysis. Default: False
+ - `-nr`, `--not-reverse`: do not consider reverse complement in enrichment analysis. Default: False
  - `-s SEQLOGO`, `--seqlogo SEQLOGO`: generate motif logo of enriched motifs. Default: True
  - `--version VERSION`: print the version and quit. 
 
