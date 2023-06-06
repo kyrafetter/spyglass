@@ -93,23 +93,34 @@ Additionally, users may choose to specify the optional options below:
 <a name="formats"></a>
 ## File Formats
 ### Input Files
-`peaks.bed` is a tab-delimited file in BED format with no header. It contains 6 columns as follows:
+#### `peaks.bed` 
+A tab-delimited file in BED format with no header. It contains 6 columns as follows:
 ```
 chromosome    start_coordinate    end_coordinate    peak_ID    .    strand(+/-)
 ```
-`ref.fa` is a reference genome sequence in FASTA format. It contains the name of the chromosome followed by the sequence:
+ - col 1: chromosome, in the format `chr[name]` where `[name]` is the chromosome number 
+ - col 2: start coordinate, the start of the peak region
+ - col 3: end coordinate, the end of the peak region
+ - col 4: peak ID, string ID for given peak
+ - col 5: not used
+ - col 6: strand, either `+` for the forward strand or `-` for the reverse strand
+
+#### `ref.fa` 
+A reference genome sequence in FASTA format. It contains the name of the chromosome followed by the sequence:
 ```
 >chr[name]
 [chromosome sequence]
 ```
-`motifs.pwm` contains the PWMs of motifs-of-interest. It contains the name of motif followed by a 4 tab-delimited columns of weights (using alphabetical order of
+#### `motifs.pwm` 
+The PWMs of motifs-of-interest. It contains the name of motif followed by a 4 tab-delimited columns of weights (using alphabetical order of
 nucleotides, ACGT), one row per motif position:
 ```
 >[motif name]
 weight_A    weight_C    weight_G    weight_T
 ```
 ### Output Files
-`spyglass_results.txt`, the final output file, contains the following tab-delimited columns:
+#### `spyglass_results.txt`
+The final output file, contains the following tab-delimited columns:
 ```
 motif_name    number_foreground_peaks_with_motif    number_background_peaks_with_motif    p-value    enriched(yes/no)
 ```
