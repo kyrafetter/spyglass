@@ -57,8 +57,8 @@ def RetrieveFastaSeq(fasta, chromosome, start, end):
 	"""
 
 	# return sequence on given chromosome from start coordinate to end coordinate
-	return (fasta[chromosome][(start - 1):end].seq).upper()
-	
+	return fasta[chromosome][(start - 1):end].seq.upper()
+
 def LoadSeqs(fasta, peakBed):
 	"""
 	Return a list of peak sequences specified in peaks file
@@ -104,16 +104,17 @@ def GenerateRandomBkgSeqs(fasta, numSeqs, seqLen, log):
 	printcounter = 0
 	for i in range(0, numSeqs):
 		printcounter += 1
-		if printcounter % int(numSeqs / 10) == 0:
-# 			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")
-			log.write("=")
+		if printcounter % 100 == 0:
+#		if printcounter % int(numSeqs / 10) == 0:
+			log.write("generating background seq " + str(printcounter) + "/" + str(numSeqs) + "\n")
+#			log.write("=")
 		# get a random chromosome
 		chrom = np.random.choice(chrs, 1)
 		# get a random start position on chosen chromosome
 		start = random.randrange(0, len(fasta[chrom[0]][0:].seq) - seqLen)
 		# append sequence on chrom beginning at start of lenth seqLen
 		seqs.append(RetrieveFastaSeq(fasta, chrom[0], start, start + seqLen - 1))
-	log.write("\n\n")
+#	log.write("\n\n")
 	return seqs
 
 	
@@ -137,7 +138,8 @@ def ScoreSeq(pwm, seq):
 	score = 0
 	# Increment score by the corresponding A/C/T/G value for each position in the PWM
 	for i in range(len(seq)):
-		score = score + pwm[nucs[seq[i]]][i]
+		if seq[i] != "N":
+			score = score + pwm[nucs[seq[i]]][i]
 	return score
 	
 def ReverseComplement(seq):
@@ -155,9 +157,8 @@ def ReverseComplement(seq):
        reverse complement of seq
 	"""
 	revcomp = ""
-	revdict = {"A": "T", "C": "G", "G": "C", "T": "A"}
+	revdict = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N"}
 	# For each letter in seq, prepend its complement base to revcomp
-	#print(seq)
 	for c in seq:
 		revcomp = revdict.get(c) + revcomp
 	return revcomp
@@ -213,6 +214,7 @@ def ComputeNucFreqs(sequences):
 		for i, nuc in enumerate(["A", "C", "G", "T"]):
 			freqs[i] += seq.count(nuc)
 	freqs = [f / counter for f in freqs]
+	freqs[3] = 1 - freqs[0] - freqs[1] - freqs[2]   
 	return freqs
 	
 def RandomSequence(n, freqs):
@@ -231,7 +233,6 @@ def RandomSequence(n, freqs):
     seq : str
        random sequence
 	"""
-	freqs[3] = 1 - freqs[0] - freqs[1] - freqs[2]   
 	seq = ""
 	for i in range(n):
 		seq += np.random.choice(["A", "C", "G", "T"], p = freqs)

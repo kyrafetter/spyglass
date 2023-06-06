@@ -37,13 +37,14 @@ def main():
     parser.add_argument("-l", "--log", help = "write log to file. Default: stdout", metavar = "FILE", type = str, required = False)
     parser.add_argument("-b", "--background", help = "BED file of user-specified background genomic peak regions. Default: background sequences will be chosen randomly from the reference genome", type = str, metavar = "BACKGROUND", required = False)
     parser.add_argument("-p", "--pval", help = "p-value threshold for significant enrichment. Default: 0.0000001", type = float, metavar = "PVALUE", required = False)
-    parser.add_argument("-r", "--not-reverse", help = "do not consider reverse complement in enrichment analysis. Default: FALSE", action = 'store_true', required = False)
-    parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: FALSE", type = bool, metavar = "SEQLOGO", required = False)
+#     parser.add_argument("-r", "--not-reverse", help = "do not consider reverse complement in enrichment analysis. Default: FALSE", action = 'store_false', required = False)
+    parser.add_argument("-nr", "--not-reverse", help = "do not consider reverse complement in enrichment analysis. Default: FALSE", nargs='?', const = True, default = False, required = False)
+#     parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: FALSE", type = bool, metavar = "SEQLOGO", required = False)
+    parser.add_argument("-s", "--seqlogo", help = "generate the motif logo(s) of enriched motifs. Default: FALSE", nargs='?', const = True, default = False, required = False)
     parser.add_argument("--version", help = "print the version and quit", action = "version", version = '{version}'.format(version = __version__))
 
     # parse arguments
     args = parser.parse_args()
-
 
     # -------------------- Set-Up Log and Outfile --------------------
 
@@ -139,25 +140,25 @@ def main():
     
 
     # -------------------- Perform Motif Enrichment --------------------
-    
+
+       
     log.write("Starting motif enrichment analysis...\n\n")
 
-    if args.not_reverse is None:
-        reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
-        
+    # calculate frequencies
     if args.not_reverse:
-        log.write("note: not using reverse complement stand\n\n")
-        
-    # initialize vars for null dist sim
-    if args.not_reverse is None:
-        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
-    else:
+        log.write("note: not using reverse complement strand\n\n")
         freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs)
+    else:
+        reverse_seqs = [myutils.ReverseComplement(item) for item in peak_seqs] + [myutils.ReverseComplement(item) for item in bg_seqs]
+        freqs = myutils.ComputeNucFreqs(peak_seqs+bg_seqs+reverse_seqs)
+    
+    # initialize vars for null dist sim
     numsim = 10000
     null_pval = 0.01
     enriched_pval = args.pval if args.pval is not None else 0.0000001
     enrichment_results = []
     
+    # for each motif in pwm 
     for i in range(len(PWMList)):
         log.write("Motif " + pwm_names[i] + ":\n")
         
