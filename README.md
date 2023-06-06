@@ -6,6 +6,8 @@
 <a name="prerequisites"></a>
 ## Miro Board
 https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui
+![Image](miro-board-main.png)
+![Image](miro-board-myutils.png)
 
 <a name="prerequisites"></a>
 ## Prerequisites
