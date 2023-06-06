@@ -4,12 +4,6 @@
 [Prerequisites](#prerequisites) | [Installation](#install) | [Basic Usage](#usage) | [spyglass Options](#options) | [File formats](#formats) | [Testing](#testing)
 
 <a name="prerequisites"></a>
-## Miro Board
-https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui
-![Image](miro-board-main.png)
-![Image](miro-board-myutils.png)
-
-<a name="prerequisites"></a>
 ## Prerequisites
 `spyglass` requires the following python libraries to be installed:
 - numpy
@@ -134,6 +128,12 @@ The list of motifs will be sorted so that enriched motifs are listed first and b
 
 <a name="testing"></a>
 ## Testing
+
+<a name="Miro Board"></a>
+## Miro Board
+We used [miro](https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui) to help wireframe our design process <br/>
+![Image](miro-board-main.png)
+![Image](miro-board-myutils.png)
 
 <a name="contributors"></a>
 ## Contributors 
