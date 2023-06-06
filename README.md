@@ -134,6 +134,7 @@ The list of motifs will be sorted so that enriched motifs are listed first and b
 We used [miro](https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui) to help wireframe our design process <br/>
 ![Image](miro-board-main.png)
 ![Image](miro-board-myutils.png)
+![Image](miro-board-output.png)
 
 <a name="contributors"></a>
 ## Contributors 
