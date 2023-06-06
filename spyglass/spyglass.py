@@ -196,7 +196,7 @@ def main():
 
     results = pd.DataFrame(enrichment_results)
     results.columns = ["# motif_name", "motif_occurences_foreground", "motif_occurences_background", "pvalue", "enriched?"]
-    results.sort_values(by = ["pvalue", "# motif_name"], ascending = False).reset_index(drop = True)
+    results = results.sort_values(by = ["pvalue", "# motif_name"], ascending = False).reset_index(drop = True)
     results.to_csv(outf, sep = "\t", header = True, index = False)
 
 
