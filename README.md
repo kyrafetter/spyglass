@@ -1,7 +1,7 @@
 # spyglass
 <img align="right" src="spyglass_logo.png" width="300" height="120" /> <br clear="left"/> `spyglass` is a Python package that detects the enrichment of known DNA-binding motifs in genomic regions. This PWM (position weight matrix)-based implementation performs a subset of the `findMotifsGenome.pl` command available through Homer (see the [Homer](http://homer.ucsd.edu/homer/ngs/peakMotifs.html) page for more details).
 
-[Prerequisites](#prerequisites) | [Installation](#install) | [Basic Usage](#usage) | [spyglass Options](#options) | [File formats](#formats) | [Testing](#testing)
+[Prerequisites](#prerequisites) | [Installation](#install) | [Basic Usage](#usage) | [spyglass Options](#options) | [File formats](#formats) | [Miro board](#miro)
 
 <a name="prerequisites"></a>
 ## Prerequisites
@@ -87,7 +87,7 @@ Additionally, users may choose to specify the optional options below:
  - `-b BACKGROUND`, `--background BACKGROUND`: BED file of user-specified background genomic peak regions. Default: background sequences are randomly chosen from the reference genome
  - `-p PVAL`, `--pval PVAL`: p-value threshold for significant enrichment. Default: 0.0000001 
  - `-nr`, `--not-reverse`: do not consider reverse complement in enrichment analysis. Default: False
- - `-s SEQLOGO`, `--seqlogo SEQLOGO`: generate motif logo of enriched motifs. Default: True
+ - [IN PROGRESS] `-s SEQLOGO`, `--seqlogo SEQLOGO`: generate motif logo of enriched motifs. Default: True
  - `--version VERSION`: print the version and quit. 
 
 <a name="formats"></a>
@@ -126,10 +126,7 @@ motif_name    number_foreground_peaks_with_motif    number_background_peaks_with
 ```
 The list of motifs will be sorted so that enriched motifs are listed first and by p-value significance (smallest to largest). 
 
-<a name="testing"></a>
-## Testing
-
-<a name="Miro Board"></a>
+<a name="miro"></a>
 ## Miro Board
 We used [miro](https://miro.com/app/live-embed/uXjVMB4LARw=/?embedMode=view_only_without_ui) to help wireframe our design process <br/>
 ![Image](miro-board-main.png)
